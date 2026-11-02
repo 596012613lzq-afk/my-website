@@ -674,6 +674,14 @@
                 document.getElementById('navLinks').classList.remove('active');
             });
         });
+        
+        // 分享网站
+        function shareWebsite() {
+            const url = window.location.href;
+            navigator.clipboard.writeText(url).then(() => {
+                alert('✅ 网站链接已复制！\n\n快粘贴给你的朋友吧！😊');
+            });
+        }
     </script>
     
     <div class="main">
@@ -715,6 +723,7 @@
                     <a href="https://www.douyin.com" target="_blank" title="抖音">🎵</a>
                     <a href="https://www.xiaohongshu.com" target="_blank" title="小红书">📕</a>
                     <a href="https://www.bilibili.com" target="_blank" title="B站">📺</a>
+                    <a href="https://qm.qq.com" target="_blank" title="QQ">🐧</a>
                     <a href="https://www.wechat.com" target="_blank" title="微信">💬</a>
                 </div>
             </div>
@@ -795,6 +804,8 @@
     
     <footer class="footer">
         © 2026 老头的小站 | 用 ❤️ 制作
+        <br><br>
+        <button onclick="shareWebsite()" style="background: #00d4ff; color: #0f1423; border: none; padding: 8px 20px; border-radius: 20px; cursor: pointer; font-size: 14px; font-weight: 600;">📤 分享我的网站</button>
     </footer>
     
     <!-- 音乐播放器 -->
