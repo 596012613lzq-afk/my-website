@@ -751,11 +751,17 @@
         © 2026 老头的小站 | 用 ❤️ 制作
     </footer>
     
-    <!-- 音乐按钮 -->
-    <button class="music-btn" onclick="toggleMusic()" id="musicBtn">🎵</button>
-    <audio id="bgm" loop>
-        <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=soft-piano-music.mp3" type="audio/mpeg">
-    </audio>
+    <!-- 音乐播放器 -->
+    <div class="music-player" id="musicPlayer" style="position: fixed; bottom: 20px; right: 20px; background: rgba(15, 20, 35, 0.95); border: 1px solid rgba(0, 212, 255, 0.3); border-radius: 12px; padding: 15px; z-index: 1000; backdrop-filter: blur(10px); box-shadow: 0 5px 20px rgba(0, 212, 255, 0.2);">
+        <div style="text-align: center; margin-bottom: 10px; color: #00d4ff; font-size: 12px; font-weight: 600;">🎵 音乐播放器</div>
+        <div style="display: flex; gap: 10px; align-items: center; justify-content: center;">
+            <button onclick="prevSong()" style="background: none; border: none; color: #00d4ff; font-size: 18px; cursor: pointer;">⏮</button>
+            <button onclick="toggleMusic()" id="musicBtn" style="background: none; border: none; color: #00d4ff; font-size: 24px; cursor: pointer;">▶</button>
+            <button onclick="nextSong()" style="background: none; border: none; color: #00d4ff; font-size: 18px; cursor: pointer;">⏭</button>
+        </div>
+        <div id="songName" style="text-align: center; margin-top: 8px; color: #8892b0; font-size: 11px;">轻音乐</div>
+    </div>
+    <audio id="bgm"></audio>
     
     <!-- 深色模式按钮 -->
     <button class="dark-mode-btn" onclick="toggleDarkMode()" id="darkModeBtn">🌙</button>
@@ -948,21 +954,54 @@
         
         renderMessages();
         
-        // 音乐控制
+        // 音乐播放器
+        const songs = [
+            { name: "轻音乐", url: "https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=soft-piano-music.mp3" },
+            { name: "欢快钢琴", url: "https://cdn.pixabay.com/download/audio/2021/11/25/audio_974948d8b7.mp3?filename=happy-piano.mp3" },
+            { name: "梦幻电子", url: "https://cdn.pixabay.com/download/audio/2022/03/10/audio_4f2e568d1b.mp3?filename=dreamy-pad.mp3" }
+        ];
+        let currentSong = 0;
         let musicPlaying = false;
         const bgm = document.getElementById('bgm');
         const musicBtn = document.getElementById('musicBtn');
+        const songName = document.getElementById('songName');
+        
+        function loadSong(index) {
+            currentSong = index;
+            bgm.src = songs[currentSong].url;
+            songName.textContent = songs[currentSong].name;
+            if(musicPlaying) {
+                bgm.play().catch(() => {});
+            }
+        }
         
         function toggleMusic() {
             if(musicPlaying) {
                 bgm.pause();
-                musicBtn.textContent = '🎵';
+                musicBtn.textContent = '▶';
             } else {
                 bgm.play().catch(() => {});
                 musicBtn.textContent = '⏸️';
             }
             musicPlaying = !musicPlaying;
         }
+        
+        function prevSong() {
+            currentSong = (currentSong - 1 + songs.length) % songs.length;
+            loadSong(currentSong);
+        }
+        
+        function nextSong() {
+            currentSong = (currentSong + 1) % songs.length;
+            loadSong(currentSong);
+        }
+        
+        // 自动播放结束后切下一首
+        bgm.addEventListener('ended', () => {
+            nextSong();
+        });
+        
+        loadSong(0);
         
         // 日记部分
         function saveDiary() {
