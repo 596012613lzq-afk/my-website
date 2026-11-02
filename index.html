@@ -611,6 +611,36 @@
                 gap: 15px;
             }
         }
+        
+        /* 汉堡菜单按钮 */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: #333;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: white;
+                flex-direction: column;
+                padding: 20px;
+                box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+            }
+            .nav-links.active {
+                display: flex;
+            }
+        }
     </style>
 </head>
 <body>
@@ -618,7 +648,8 @@
     <nav class="navbar">
         <div class="nav-container">
             <div class="logo">老头的小站</div>
-            <div class="nav-links">
+            <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+            <div class="nav-links" id="navLinks">
                 <a href="#home">首页</a>
                 <a href="#links">我的收藏</a>
                 <a href="#game">游戏</a>
@@ -629,6 +660,21 @@
             </div>
         </div>
     </nav>
+    
+    <!-- 汉堡菜单 -->
+    <script>
+        function toggleMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        }
+        
+        // 点击链接后关闭菜单
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('navLinks').classList.remove('active');
+            });
+        });
+    </script>
     
     <div class="main">
         <!-- Hero区域 -->
