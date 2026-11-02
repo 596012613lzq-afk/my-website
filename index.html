@@ -942,14 +942,21 @@
             }
             
             let html = '';
-            messages.forEach(msg => {
+            messages.forEach((msg, index) => {
                 html += '<div class="message-item">';
-                html += '<div class="message-author">' + msg.name + ' · ' + msg.date + '</div>';
+                html += '<div class="message-author">' + msg.name + ' · ' + msg.date + ' <button onclick="deleteMessage(' + index + ')" style="float: right; background: none; border: none; color: #ff6b6b; cursor: pointer; font-size: 14px;">🗑️</button></div>';
                 html += '<div class="message-text">' + msg.text + '</div>';
                 html += '</div>';
             });
             
             listEl.innerHTML = html;
+        }
+        
+        function deleteMessage(index) {
+            let messages = JSON.parse(localStorage.getItem('messages') || '[]');
+            messages.splice(index, 1);
+            localStorage.setItem('messages', JSON.stringify(messages));
+            renderMessages();
         }
         
         renderMessages();
@@ -1042,14 +1049,21 @@
             }
             
             let html = '';
-            diaries.forEach(diary => {
+            diaries.forEach((diary, index) => {
                 html += '<div class="diary-item">';
-                html += '<div class="diary-date">' + diary.date + '</div>';
+                html += '<div class="diary-date">' + diary.date + ' <button onclick="deleteDiary(' + index + ')" style="float: right; background: none; border: none; color: #ff6b6b; cursor: pointer; font-size: 14px;">🗑️</button></div>';
                 html += '<div class="diary-text">' + diary.text + '</div>';
                 html += '</div>';
             });
             
             listEl.innerHTML = html;
+        }
+        
+        function deleteDiary(index) {
+            let diaries = JSON.parse(localStorage.getItem('diaries') || '[]');
+            diaries.splice(index, 1);
+            localStorage.setItem('diaries', JSON.stringify(diaries));
+            renderDiaries();
         }
         
         renderDiaries();
@@ -1096,15 +1110,22 @@
             }
             
             let html = '';
-            blogs.forEach(blog => {
+            blogs.forEach((blog, index) => {
                 html += '<div class="diary-item">';
-                html += '<div class="diary-date" style="color: #00d4ff; font-weight: 600; margin-bottom: 5px;">📰 ' + blog.title + '</div>';
+                html += '<div class="diary-date" style="color: #00d4ff; font-weight: 600; margin-bottom: 5px;">📰 ' + blog.title + ' <button onclick="deleteBlog(' + index + ')" style="float: right; background: none; border: none; color: #ff6b6b; cursor: pointer; font-size: 14px;">🗑️</button></div>';
                 html += '<div class="diary-date" style="font-size: 12px; color: #999; margin-bottom: 8px;">' + blog.date + '</div>';
                 html += '<div class="diary-text">' + blog.content + '</div>';
                 html += '</div>';
             });
             
             listEl.innerHTML = html;
+        }
+        
+        function deleteBlog(index) {
+            let blogs = JSON.parse(localStorage.getItem('blogs') || '[]');
+            blogs.splice(index, 1);
+            localStorage.setItem('blogs', JSON.stringify(blogs));
+            renderBlogs();
         }
         
         renderBlogs();
