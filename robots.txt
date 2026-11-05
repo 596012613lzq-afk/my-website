@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://596012613lzq-afk.github.io/my-website/sitemap.xml

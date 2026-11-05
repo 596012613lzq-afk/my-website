@@ -8,6 +8,9 @@
     <meta property="og:title" content="老头的小站">
     <meta property="og:description" content="小希的个人主页，记录生活与爱好。">
     <meta property="og:type" content="website">
+    <meta property="og:image" content="https://596012613lzq-afk.github.io/my-website/og-image.svg">
+    <meta property="og:url" content="https://596012613lzq-afk.github.io/my-website/">
+    <meta name="twitter:card" content="summary_large_image">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏠</text></svg>">
     <link rel="manifest" href="manifest.json">
     <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
@@ -355,8 +358,13 @@
         <section class="game-container" id="blog">
             <h2>📝 我的博客</h2>
             <input type="text" id="blogTitle" placeholder="文章标题...">
+            <input type="text" id="blogCategory" placeholder="分类（如：游戏/日常/学习）" style="margin-bottom:10px;">
             <textarea class="diary-input" id="blogContent" placeholder="写点什么..."></textarea>
             <button class="btn" onclick="saveBlog()">发布文章</button>
+            <button class="btn" onclick="exportData()" style="background:#5a6a7a;margin-left:8px;">💾 导出备份</button>
+            <button class="btn" onclick="document.getElementById('importFile').click()" style="background:#5a6a7a;margin-left:8px;">📂 导入</button>
+            <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+            <div id="blogFilter" style="margin:15px 0;"></div>
             <div class="diary-list" id="blogList"></div>
         </section>
 
@@ -614,27 +622,69 @@
         renderDiaries();
 
         // ===== 博客 =====
+        let blogFilter = 'all';
         function saveBlog(){
             const title=document.getElementById('blogTitle').value.trim();
             const content=document.getElementById('blogContent').value.trim();
+            const category=document.getElementById('blogCategory').value.trim()||'未分类';
             if(!title||!content){alert('标题和内容都要写哦！');return;}
             let b=JSON.parse(localStorage.getItem('blogs')||'[]');
             const now=new Date();
-            b.unshift({title,content,date:now.getFullYear()+'-'+(now.getMonth()+1)+'-'+now.getDate()});
+            b.unshift({title,content,category,date:now.getFullYear()+'-'+(now.getMonth()+1)+'-'+now.getDate()});
             localStorage.setItem('blogs',JSON.stringify(b));
-            document.getElementById('blogTitle').value=''; document.getElementById('blogContent').value='';
+            document.getElementById('blogTitle').value=''; document.getElementById('blogContent').value=''; document.getElementById('blogCategory').value='';
             renderBlogs(); alert('文章发布成功！');
         }
         function renderBlogs(){
             const b=JSON.parse(localStorage.getItem('blogs')||'[]');
             const el=document.getElementById('blogList');
-            if(b.length===0){el.innerHTML='<div style="color:#5a6a7a;font-size:13px;text-align:center;">还没有文章，快写第一篇吧！</div>';return;}
+            // Build filter chips
+            const cats=['all',...new Set(b.map(x=>x.category))];
+            document.getElementById('blogFilter').innerHTML = cats.map(c =>
+                '<button onclick="blogFilter=\''+c+'\';renderBlogs()" style="background:'+(c===blogFilter?'#00d4ff':'#1a2a3a')+';color:'+(c===blogFilter?'#0a0e17':'#8892b0')+';border:none;padding:5px 14px;border-radius:15px;margin:3px;cursor:pointer;font-size:12px;">'+(c==='all'?'全部':c)+'</button>'
+            ).join('');
+            const filtered = blogFilter==='all' ? b : b.filter(x=>x.category===blogFilter);
+            if(filtered.length===0){el.innerHTML='<div style="color:#5a6a7a;font-size:13px;text-align:center;">这个分类还没有文章</div>';return;}
             let h='';
-            b.forEach((item,i)=>{h+='<div class="diary-item"><div class="diary-date" style="color:#00d4ff;">📰 '+item.title+' <button onclick="deleteBlog('+i+')" style="float:right;background:none;border:none;color:#ff6b6b;cursor:pointer;">🗑️</button></div><div style="font-size:11px;color:#5a6a7a;margin:3px 0 6px;">'+item.date+'</div><div class="diary-text">'+item.content+'</div></div>';});
+            filtered.forEach((item,i)=>{
+                const realIdx = b.indexOf(item);
+                h+='<div class="diary-item"><div class="diary-date" style="color:#00d4ff;">📰 '+item.title+' <span style="font-size:11px;background:rgba(0,212,255,0.15);padding:2px 8px;border-radius:10px;margin-left:8px;color:#00d4ff;">'+item.category+'</span> <button onclick="deleteBlog('+realIdx+')" style="float:right;background:none;border:none;color:#ff6b6b;cursor:pointer;">🗑️</button></div><div style="font-size:11px;color:#5a6a7a;margin:3px 0 6px;">'+item.date+'</div><div class="diary-text">'+item.content+'</div></div>';
+            });
             el.innerHTML=h;
         }
         function deleteBlog(i){let b=JSON.parse(localStorage.getItem('blogs')||'[]');b.splice(i,1);localStorage.setItem('blogs',JSON.stringify(b));renderBlogs();}
         renderBlogs();
+
+        // ===== 博客/日记 导出导入（跨设备备份） =====
+        function exportData(){
+            const data = {
+                blogs: JSON.parse(localStorage.getItem('blogs')||'[]'),
+                diaries: JSON.parse(localStorage.getItem('diaries')||'[]'),
+                messages: JSON.parse(localStorage.getItem('messages')||'[]')
+            };
+            const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'laotou-backup-' + new Date().toISOString().slice(0,10) + '.json';
+            a.click();
+            alert('💾 备份文件已下载，换设备时用"导入"恢复');
+        }
+        function importData(e){
+            const file = e.target.files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = function(ev){
+                try {
+                    const data = JSON.parse(ev.target.result);
+                    if(data.blogs) localStorage.setItem('blogs', JSON.stringify(data.blogs));
+                    if(data.diaries) localStorage.setItem('diaries', JSON.stringify(data.diaries));
+                    if(data.messages) localStorage.setItem('messages', JSON.stringify(data.messages));
+                    renderBlogs(); renderDiaries(); renderMessages();
+                    alert('📂 导入成功！');
+                } catch(err) { alert('❌ 文件格式不对'); }
+            };
+            reader.readAsText(file);
+        }
 
         // ===== 平滑滚动 =====
         document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',function(e){e.preventDefault();const t=document.querySelector(this.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth'});});});
