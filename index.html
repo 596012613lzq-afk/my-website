@@ -644,6 +644,34 @@
         // ===== 平滑滚动 =====
         document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',function(e){e.preventDefault();const t=document.querySelector(this.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth'});});});
 
+        // ===== 节日自动换肤 =====
+        (function(){
+            const now = new Date();
+            const m = now.getMonth()+1, d = now.getDate();
+            let accent = '#00d4ff'; // 默认蓝
+            if(m===1 && d>=20 && d<=25) accent='#ffd700'; // 春节金
+            else if(m===3 && d>=7 && d<=15) accent='#ff6b6b'; // 妇女节/春天红
+            else if(m===5 && d>=1 && d<=5) accent='#ff4444'; // 劳动节红
+            else if(m===6 && d>=1 && d<=2) accent='#ff6b9d'; // 六一粉
+            else if(m===10 && d>=1 && d<=7) accent='#ff3333'; // 国庆红
+            else if(m===12 && d>=20 && d<=26) accent='#4caf50'; // 圣诞绿
+            document.documentElement.style.setProperty('--accent', accent);
+            // Apply to elements that use #00d4ff
+            const style = document.createElement('style');
+            style.textContent = `
+                .logo, .nav-links a:hover, .card h2, .info-item .label, .diary-date,
+                .now-card, .diary-item, .message-item, .link-item:hover, .guess-correct,
+                .btn, .hero-btn, .domain-badge, #typewriter .cursor { color: ${accent}; }
+                .nav-links a:hover, .btn, .hero-btn { color: #0a0e17 !important; }
+                .btn, .hero-btn, #typewriter .cursor { background: ${accent}; }
+                .now-card, .diary-item, .message-item { border-left-color: ${accent}; }
+                .quote-bar { border-left-color: ${accent}; }
+                #progressBar { background: linear-gradient(90deg, ${accent}, #00ff88); }
+                .guess-correct { background: rgba(76,175,80,0.15); }
+            `;
+            document.head.appendChild(style);
+        })();
+
         // ===== PWA =====
         if('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js').catch(()=>{}); }
     </script>
