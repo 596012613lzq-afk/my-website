@@ -679,7 +679,7 @@
                     if(data.blogs) localStorage.setItem('blogs', JSON.stringify(data.blogs));
                     if(data.diaries) localStorage.setItem('diaries', JSON.stringify(data.diaries));
                     if(data.messages) localStorage.setItem('messages', JSON.stringify(data.messages));
-                    renderBlogs(); renderDiaries(); renderMessages();
+                    renderBlogs(); renderDiaries();
                     alert('📂 导入成功！');
                 } catch(err) { alert('❌ 文件格式不对'); }
             };
