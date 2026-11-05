@@ -369,10 +369,8 @@
 
         <section class="game-container" id="message">
             <h2>💬 留言板</h2>
-            <input type="text" id="messageName" placeholder="你的名字">
-            <textarea class="message-input" id="messageInput" placeholder="写点什么吧..."></textarea>
-            <button class="btn" onclick="saveMessage()">留言</button>
-            <div class="message-list" id="messageList"></div>
+            <p style="color:#8892b0;font-size:13px;margin-bottom:15px;">用 GitHub 账号留言，所有人都能看到～</p>
+            <div class="giscus"></div>
         </section>
     </div>
 
@@ -560,28 +558,25 @@
         }
         loadWeather();
 
-        // ===== 留言板 =====
-        function saveMessage() {
-            const name = document.getElementById('messageName').value.trim();
-            const text = document.getElementById('messageInput').value.trim();
-            if(!name||!text){alert('请填写名字和留言内容！');return;}
-            let m = JSON.parse(localStorage.getItem('messages')||'[]');
-            const now = new Date();
-            m.unshift({name,text,date:now.getFullYear()+'-'+(now.getMonth()+1)+'-'+now.getDate()});
-            localStorage.setItem('messages',JSON.stringify(m));
-            document.getElementById('messageName').value=''; document.getElementById('messageInput').value='';
-            renderMessages();
-        }
-        function renderMessages() {
-            const m = JSON.parse(localStorage.getItem('messages')||'[]');
-            const el = document.getElementById('messageList');
-            if(m.length===0){el.innerHTML='<div style="color:#5a6a7a;font-size:13px;text-align:center;">还没有留言，快来第一条吧！</div>';return;}
-            let h='';
-            m.forEach((msg,i)=>{h+='<div class="message-item"><div class="message-author">'+msg.name+' · '+msg.date+' <button onclick="deleteMessage('+i+')" style="float:right;background:none;border:none;color:#ff6b6b;cursor:pointer;">🗑️</button></div><div class="message-text">'+msg.text+'</div></div>';});
-            el.innerHTML=h;
-        }
-        function deleteMessage(i){let m=JSON.parse(localStorage.getItem('messages')||'[]');m.splice(i,1);localStorage.setItem('messages',JSON.stringify(m));renderMessages();}
-        renderMessages();
+        // ===== giscus 真实留言板 =====
+        (function(){
+            const s = document.createElement('script');
+            s.src = 'https://giscus.app/client.js';
+            s.setAttribute('data-repo', '596012613lzq-afk/my-website');
+            s.setAttribute('data-repo-id', 'R_kgDOVf0ndQ');
+            s.setAttribute('data-category', 'Announcements');
+            s.setAttribute('data-category-id', 'DIC_kwDOVf0ndc4DKbxK');
+            s.setAttribute('data-mapping', 'pathname');
+            s.setAttribute('data-strict', '0');
+            s.setAttribute('data-reactions-enabled', '1');
+            s.setAttribute('data-emit-metadata', '0');
+            s.setAttribute('data-input-position', 'bottom');
+            s.setAttribute('data-theme', 'dark_dimmed');
+            s.setAttribute('data-lang', 'zh-CN');
+            s.crossOrigin = 'anonymous';
+            s.async = true;
+            document.querySelector('.giscus').appendChild(s);
+        })();
 
         // ===== 音乐 =====
         const songs = [
