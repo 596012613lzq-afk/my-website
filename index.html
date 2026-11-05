@@ -18,6 +18,12 @@
             background: #0a0e17; color: #e0e6ed; line-height: 1.6;
             overflow-x: hidden;
         }
+        /* 阅读进度条 */
+        #progressBar {
+            position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+            background: linear-gradient(90deg, #00d4ff, #00ff88); z-index: 9999;
+            transition: width 0.1s;
+        }
         #particles-canvas {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             z-index: 0; pointer-events: none;
@@ -38,17 +44,13 @@
         .visitor-info { color: #999; font-size: 12px; }
         .main { max-width: 1000px; margin: 0 auto; padding: 30px 20px; position: relative; z-index: 1; }
 
-        /* 开屏动画 */
         .hero {
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
             border-radius: 16px; padding: 50px 30px; text-align: center; margin-bottom: 25px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.3); color: white; position: relative; overflow: hidden;
             animation: heroIn 1s ease-out;
         }
-        @keyframes heroIn {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes heroIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
         .hero::before {
             content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(90deg, rgba(0,212,255,0.08) 1px, transparent 1px),
@@ -73,16 +75,13 @@
         }
         .hero-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,212,255,0.5); }
 
-        .info-bar { display: flex; justify-content: center; gap: 15px; margin-bottom: 25px; flex-wrap: wrap; }
+        .info-bar { display: flex; justify-content: center; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
         .info-item {
             background: rgba(20,28,45,0.8); border: 1px solid rgba(0,212,255,0.1);
-            border-radius: 8px; padding: 10px 18px; font-size: 13px; color: #8892b0;
+            border-radius: 8px; padding: 8px 14px; font-size: 13px; color: #8892b0;
         }
-        .info-item .label { color: #5a6a7a; margin-right: 5px; }
-
-        /* 每日一言 */
         .quote-bar {
-            text-align: center; padding: 18px 25px; margin-bottom: 25px;
+            text-align: center; padding: 16px 25px; margin-bottom: 25px;
             background: rgba(0,212,255,0.06); border-left: 3px solid #00d4ff; border-radius: 8px;
             color: #8892b0; font-size: 14px; font-style: italic;
         }
@@ -93,24 +92,28 @@
             background: rgba(20,28,45,0.8); border: 1px solid rgba(0,212,255,0.1);
             border-radius: 12px; padding: 25px; transition: all 0.3s;
         }
-        /* 卡片翻转/倾斜效果 */
-        .card:hover {
-            transform: translateY(-5px) rotateX(3deg);
-            border-color: rgba(0,212,255,0.3);
-            box-shadow: 0 10px 30px rgba(0,212,255,0.15);
-        }
+        .card:hover { transform: translateY(-5px) rotateX(3deg); border-color: rgba(0,212,255,0.3); box-shadow: 0 10px 30px rgba(0,212,255,0.15); }
         .card h2 { font-size: 18px; color: #00d4ff; margin-bottom: 12px; font-weight: 600; }
         .card p { color: #8892b0; font-size: 14px; }
         .now-card { border-left: 3px solid #00d4ff; }
         .now-row { display: flex; align-items: center; gap: 10px; padding: 6px 0; font-size: 14px; color: #8892b0; }
         .now-row .emoji { font-size: 20px; }
 
-        /* 去过的地方 */
         .places-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
-        .place-tag {
-            padding: 6px 14px; background: rgba(0,212,255,0.1); border-radius: 20px;
-            font-size: 13px; color: #00d4ff; border: 1px solid rgba(0,212,255,0.2);
+        .place-tag { padding: 6px 14px; background: rgba(0,212,255,0.1); border-radius: 20px; font-size: 13px; color: #00d4ff; border: 1px solid rgba(0,212,255,0.2); }
+
+        /* 照片墙 */
+        .photo-wall { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px; }
+        .photo-item {
+            aspect-ratio: 1; border-radius: 10px; display: flex; align-items: center; justify-content: center;
+            font-size: 36px; cursor: pointer; transition: transform 0.3s; background: rgba(0,212,255,0.08);
         }
+        .photo-item:hover { transform: scale(1.08); }
+
+        /* 倒计时 */
+        .countdown-box { text-align: center; padding: 10px 0; }
+        .countdown-num { font-size: 32px; font-weight: 700; color: #00d4ff; }
+        .countdown-label { font-size: 13px; color: #8892b0; margin-top: 4px; }
 
         .game-container {
             background: rgba(20,28,45,0.8); border: 1px solid rgba(0,212,255,0.1);
@@ -127,12 +130,12 @@
         .link-item .icon { font-size: 20px; }
         .link-item .name { font-size: 14px; }
 
-        .diary-input, .message-input, #blogTitle, #blogContent {
+        .diary-input, .message-input, #blogTitle, #blogContent, #messageName {
             width: 100%; border: 2px solid rgba(0,212,255,0.15); border-radius: 8px;
             padding: 10px; font-size: 14px; font-family: inherit; resize: vertical;
             margin-bottom: 10px; outline: none; background: rgba(10,14,23,0.6); color: #e0e6ed;
         }
-        .diary-input:focus, .message-input:focus, #blogTitle:focus, #blogContent:focus { border-color: #00d4ff; }
+        .diary-input:focus, .message-input:focus, #blogTitle:focus, #blogContent:focus, #messageName:focus { border-color: #00d4ff; }
         .diary-input { min-height: 80px; }
         .message-input { min-height: 60px; }
         #blogContent { min-height: 100px; }
@@ -166,6 +169,23 @@
             transition: transform 0.2s;
         }
         .social-links a:hover { transform: scale(1.15); }
+
+        /* 贪吃蛇 */
+        #snakeCanvas {
+            display: block; margin: 0 auto; background: #0a0e17; border-radius: 8px;
+            border: 2px solid rgba(0,212,255,0.2);
+        }
+        .snake-info { text-align: center; margin: 10px 0; color: #8892b0; font-size: 14px; }
+        .snake-info span { color: #00d4ff; font-weight: 600; }
+
+        /* 分享按钮 */
+        .share-bar { display: flex; gap: 10px; justify-content: center; margin-top: 15px; flex-wrap: wrap; }
+        .share-btn {
+            padding: 8px 18px; border-radius: 20px; border: none; cursor: pointer;
+            font-size: 13px; font-weight: 600; transition: opacity 0.2s;
+        }
+        .share-btn:hover { opacity: 0.8; }
+
         .footer { text-align: center; padding: 25px; color: #5a6a7a; font-size: 12px; position: relative; z-index: 1; }
         .fab {
             position: fixed; width: 44px; height: 44px; border-radius: 50%; border: none;
@@ -181,7 +201,6 @@
             border: 1px solid rgba(0,212,255,0.3); border-radius: 12px; padding: 12px;
             z-index: 1000; backdrop-filter: blur(10px); box-shadow: 0 5px 20px rgba(0,212,255,0.2);
         }
-        /* 鼠标拖尾粒子 */
         .cursor-particle {
             position: fixed; width: 6px; height: 6px; border-radius: 50%;
             background: rgba(0,212,255,0.6); pointer-events: none; z-index: 9999;
@@ -192,12 +211,11 @@
         @media (max-width: 768px) {
             .grid { grid-template-columns: 1fr; }
             .link-list { grid-template-columns: repeat(2, 1fr); }
+            .photo-wall { grid-template-columns: repeat(3, 1fr); }
             .nav-links { gap: 12px; }
             .nav-links a { font-size: 13px; }
             .hero h1 { font-size: 28px; }
             .hero { padding: 35px 20px; }
-            .info-bar { gap: 8px; }
-            .info-item { padding: 8px 12px; font-size: 12px; }
         }
         @media (max-width: 600px) {
             .menu-toggle { display: block; }
@@ -211,6 +229,7 @@
     </style>
 </head>
 <body>
+    <div id="progressBar"></div>
     <canvas id="particles-canvas"></canvas>
 
     <nav class="navbar">
@@ -240,9 +259,10 @@
         </section>
 
         <div class="info-bar">
-            <div class="info-item"><span class="label">🕐</span><span id="currentTime">--:--</span></div>
-            <div class="info-item"><span class="label">📅</span><span id="currentDate">----</span></div>
-            <div class="info-item"><span class="label">🌤️</span><span id="weather">加载中...</span></div>
+            <div class="info-item">🕐 <span id="currentTime">--:--</span></div>
+            <div class="info-item">📅 <span id="currentDate">----</span></div>
+            <div class="info-item">🌤️ <span id="weather">加载中...</span></div>
+            <div class="info-item">⏱️ 本站已运行 <span id="uptimeDays">0</span> 天</div>
         </div>
 
         <div class="quote-bar" id="quoteBar">
@@ -255,11 +275,11 @@
                 <h2>关于我</h2>
                 <p>你好，我是小希，一名二年级"废柴"。会玩游戏、会吃辣条、会撸狗，就是不会写作业。这是我自己瞎捣鼓的网站，用来记录我的摆烂日常。</p>
                 <div class="social-links">
-                    <a href="https://www.douyin.com" target="_blank" title="抖音">🎵</a>
-                    <a href="https://www.xiaohongshu.com" target="_blank" title="小红书">📕</a>
-                    <a href="https://www.bilibili.com" target="_blank" title="B站">📺</a>
-                    <a href="https://im.qq.com" target="_blank" title="QQ">🐧</a>
-                    <a href="https://www.wechat.com" target="_blank" title="微信">💬</a>
+                    <a href="https://www.douyin.com" target="_blank">🎵</a>
+                    <a href="https://www.xiaohongshu.com" target="_blank">📕</a>
+                    <a href="https://www.bilibili.com" target="_blank">📺</a>
+                    <a href="https://im.qq.com" target="_blank">🐧</a>
+                    <a href="https://www.wechat.com" target="_blank">💬</a>
                 </div>
             </div>
             <div class="card now-card">
@@ -267,6 +287,26 @@
                 <div class="now-row"><span class="emoji">🎮</span><span>最近在玩：迷你世界</span></div>
                 <div class="now-row"><span class="emoji">🎵</span><span>最近在听：轻音乐</span></div>
                 <div class="now-row"><span class="emoji">🐶</span><span>今天在：撸球球</span></div>
+            </div>
+            <div class="card">
+                <h2>📸 照片墙</h2>
+                <div class="photo-wall">
+                    <div class="photo-item" title="球球">🐶</div>
+                    <div class="photo-item" title="游戏">🎮</div>
+                    <div class="photo-item" title="辣条">🍜</div>
+                    <div class="photo-item" title="足球">⚽</div>
+                    <div class="photo-item" title="书">📚</div>
+                    <div class="photo-item" title="音乐">🎵</div>
+                    <div class="photo-item" title="上海">🌆</div>
+                    <div class="photo-item" title="德宏">🌴</div>
+                </div>
+            </div>
+            <div class="card">
+                <h2>⏳ 倒计时</h2>
+                <div class="countdown-box">
+                    <div class="countdown-num" id="countdownNum">--</div>
+                    <div class="countdown-label" id="countdownLabel">距离暑假还有</div>
+                </div>
             </div>
             <div class="card">
                 <h2>我的爱好</h2>
@@ -295,6 +335,23 @@
             </div>
         </section>
 
+        <section class="game-container" id="game">
+            <h2>🎮 游戏区</h2>
+            <div style="margin-bottom:25px;">
+                <p style="color:#8892b0;margin-bottom:15px;font-size:14px;"><strong>猜数字：</strong>我想了一个 1-100 的数字，你来猜猜看！</p>
+                <div style="display:flex;align-items:center;justify-content:center;flex-wrap:wrap;">
+                    <input type="number" class="guess-input" id="guessInput" placeholder="输入数字" min="1" max="100">
+                    <button class="btn" onclick="checkGuess()">猜！</button>
+                </div>
+                <div class="guess-result guess-hint" id="guessResult"></div>
+            </div>
+            <div>
+                <p style="color:#8892b0;margin-bottom:10px;font-size:14px;"><strong>贪吃蛇：</strong>用方向键控制，吃到豆豆变长！</p>
+                <canvas id="snakeCanvas" width="300" height="300"></canvas>
+                <div class="snake-info">得分：<span id="snakeScore">0</span> · <button onclick="startSnake()" style="background:none;border:none;color:#00d4ff;cursor:pointer;text-decoration:underline;">重新开始</button></div>
+            </div>
+        </section>
+
         <section class="game-container" id="blog">
             <h2>📝 我的博客</h2>
             <input type="text" id="blogTitle" placeholder="文章标题...">
@@ -310,19 +367,9 @@
             <div class="diary-list" id="diaryList"></div>
         </section>
 
-        <section class="game-container" id="game">
-            <h2>🎮 猜数字游戏</h2>
-            <p style="color:#8892b0;margin-bottom:15px;font-size:14px;">我想了一个 1-100 的数字，你来猜猜看！</p>
-            <div style="display:flex;align-items:center;justify-content:center;flex-wrap:wrap;">
-                <input type="number" class="guess-input" id="guessInput" placeholder="输入数字" min="1" max="100">
-                <button class="btn" onclick="checkGuess()">猜！</button>
-            </div>
-            <div class="guess-result guess-hint" id="guessResult"></div>
-        </section>
-
         <section class="game-container" id="message">
             <h2>💬 留言板</h2>
-            <input type="text" id="messageName" placeholder="你的名字" style="width:100%;padding:10px;margin-bottom:10px;border:2px solid rgba(0,212,255,0.15);border-radius:8px;outline:none;background:rgba(10,14,23,0.6);color:#e0e6ed;font-size:14px;">
+            <input type="text" id="messageName" placeholder="你的名字">
             <textarea class="message-input" id="messageInput" placeholder="写点什么吧..."></textarea>
             <button class="btn" onclick="saveMessage()">留言</button>
             <div class="message-list" id="messageList"></div>
@@ -331,8 +378,12 @@
 
     <footer class="footer">
         © 2026 老头的小站 | 用 ❤️ 制作
-        <br><br>
-        <button onclick="shareWebsite()" style="background:#00d4ff;color:#0a0e17;border:none;padding:8px 20px;border-radius:20px;cursor:pointer;font-size:13px;font-weight:600;">📤 分享网站</button>
+        <div class="share-bar">
+            <button class="share-btn" style="background:#07c160;color:white;" onclick="shareTo('wechat')">💬 微信</button>
+            <button class="share-btn" style="background:#12b7f5;color:white;" onclick="shareTo('qq')">🐧 QQ</button>
+            <button class="share-btn" style="background:#e6162d;color:white;" onclick="shareTo('weibo')">📢 微博</button>
+            <button class="share-btn" style="background:#00d4ff;color:#0a0e17;" onclick="copyLink()">📋 复制链接</button>
+        </div>
     </footer>
 
     <div class="music-player" id="musicPlayer">
@@ -350,26 +401,14 @@
     <button class="fab back-to-top" onclick="scrollToTop()" id="backToTop">↑</button>
 
     <script>
-        // ===== 打字机效果 =====
-        const typeTexts = [
-            "记录生活、爱好和日常 ✨",
-            "一个用纯代码写的小站 💻",
-            "会玩游戏、会撸狗、会吃辣条 🐶",
-            "欢迎随便点点看 🎮"
-        ];
+        // ===== 打字机 =====
+        const typeTexts = ["记录生活、爱好和日常 ✨","一个用纯代码写的小站 💻","会玩游戏、会撸狗、会吃辣条 🐶","欢迎随便点点看 🎮"];
         let typeIdx = 0, charIdx = 0, deleting = false;
         function typeLoop() {
             const el = document.getElementById('typewriter');
             const current = typeTexts[typeIdx];
-            if(!deleting) {
-                el.innerHTML = current.substring(0, ++charIdx) + '<span class="cursor">&nbsp;</span>';
-                if(charIdx === current.length) { deleting = true; setTimeout(typeLoop, 2000); return; }
-                setTimeout(typeLoop, 80);
-            } else {
-                el.innerHTML = current.substring(0, --charIdx) + '<span class="cursor">&nbsp;</span>';
-                if(charIdx === 0) { deleting = false; typeIdx = (typeIdx+1)%typeTexts.length; }
-                setTimeout(typeLoop, 40);
-            }
+            if(!deleting) { el.innerHTML = current.substring(0, ++charIdx) + '<span class="cursor">&nbsp;</span>'; if(charIdx === current.length) { deleting = true; setTimeout(typeLoop, 2000); return; } setTimeout(typeLoop, 80); }
+            else { el.innerHTML = current.substring(0, --charIdx) + '<span class="cursor">&nbsp;</span>'; if(charIdx === 0) { deleting = false; typeIdx = (typeIdx+1)%typeTexts.length; } setTimeout(typeLoop, 40); }
         }
         typeLoop();
 
@@ -379,24 +418,10 @@
         let particles = [];
         function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         resize(); window.addEventListener('resize', resize);
-        for(let i = 0; i < 35; i++) {
-            particles.push({
-                x: Math.random()*canvas.width, y: Math.random()*canvas.height,
-                r: Math.random()*2+1, vx: (Math.random()-0.5)*0.3, vy: (Math.random()-0.5)*0.3,
-                alpha: Math.random()*0.4+0.15
-            });
-        }
+        for(let i = 0; i < 35; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, r: Math.random()*2+1, vx: (Math.random()-0.5)*0.3, vy: (Math.random()-0.5)*0.3, alpha: Math.random()*0.4+0.15 });
         function animate() {
             ctx.clearRect(0,0,canvas.width,canvas.height);
-            particles.forEach(p => {
-                p.x += p.vx; p.y += p.vy;
-                if(p.x<0||p.x>canvas.width) p.vx *= -1;
-                if(p.y<0||p.y>canvas.height) p.vy *= -1;
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
-                ctx.fillStyle = 'rgba(0,212,255,' + p.alpha + ')';
-                ctx.fill();
-            });
+            particles.forEach(p => { p.x += p.vx; p.y += p.vy; if(p.x<0||p.x>canvas.width) p.vx *= -1; if(p.y<0||p.y>canvas.height) p.vy *= -1; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2); ctx.fillStyle = 'rgba(0,212,255,' + p.alpha + ')'; ctx.fill(); });
             requestAnimationFrame(animate);
         }
         animate();
@@ -404,36 +429,55 @@
         // ===== 鼠标拖尾 =====
         let lastTrail = 0;
         document.addEventListener('mousemove', (e) => {
-            const now = Date.now();
-            if(now - lastTrail < 50) return;
-            lastTrail = now;
-            const dot = document.createElement('div');
-            dot.className = 'cursor-particle';
-            dot.style.left = (e.clientX + (Math.random()-0.5)*10) + 'px';
-            dot.style.top = (e.clientY + (Math.random()-0.5)*10) + 'px';
-            document.body.appendChild(dot);
-            setTimeout(() => dot.remove(), 800);
+            const now = Date.now(); if(now - lastTrail < 50) return; lastTrail = now;
+            const dot = document.createElement('div'); dot.className = 'cursor-particle';
+            dot.style.left = (e.clientX + (Math.random()-0.5)*10) + 'px'; dot.style.top = (e.clientY + (Math.random()-0.5)*10) + 'px';
+            document.body.appendChild(dot); setTimeout(() => dot.remove(), 800);
         });
 
         // ===== 每日一言 =====
         const quotes = [
-            { text: "今天也要开心呀！", author: "— 小希" },
-            { text: "生活就像辣条，辣并快乐着。", author: "— 小希" },
-            { text: "玩游戏怎么了，我又没输。", author: "— 小希" },
-            { text: "球球是全世界最可爱的狗！", author: "— 小希" },
-            { text: "作业明天写也行。", author: "— 小希" },
-            { text: "慢慢来，比较快。", author: "— 小希" },
-            { text: "吃好喝好，长生不老。", author: "— 小希" },
-            { text: "今天天气不错，适合出去玩。", author: "— 小希" }
+            { text: "今天也要开心呀！", author: "— 小希" }, { text: "生活就像辣条，辣并快乐着。", author: "— 小希" },
+            { text: "玩游戏怎么了，我又没输。", author: "— 小希" }, { text: "球球是全世界最可爱的狗！", author: "— 小希" },
+            { text: "作业明天写也行。", author: "— 小希" }, { text: "慢慢来，比较快。", author: "— 小希" },
+            { text: "吃好喝好，长生不老。", author: "— 小希" }, { text: "今天天气不错，适合出去玩。", author: "— 小希" }
         ];
         const q = quotes[new Date().getDate() % quotes.length];
         document.getElementById('quoteText').textContent = '"' + q.text + '"';
         document.getElementById('quoteAuthor').textContent = q.author;
 
+        // ===== 阅读进度条 =====
+        window.addEventListener('scroll', () => {
+            const h = document.documentElement;
+            const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+            document.getElementById('progressBar').style.width = pct + '%';
+            document.getElementById('backToTop').style.display = h.scrollTop > 300 ? 'flex' : 'none';
+        });
+        function scrollToTop() { window.scrollTo({top:0,behavior:'smooth'}); }
+
+        // ===== 网站运行天数 =====
+        const siteStart = new Date('2026-11-05');
+        const uptime = Math.floor((Date.now() - siteStart.getTime()) / 86400000);
+        document.getElementById('uptimeDays').textContent = uptime;
+
+        // ===== 倒计时（暑假 7月1日） =====
+        function updateCountdown() {
+            const now = new Date();
+            let target = new Date(now.getFullYear(), 6, 1);
+            if(now > target) target = new Date(now.getFullYear()+1, 6, 1);
+            const days = Math.ceil((target - now) / 86400000);
+            document.getElementById('countdownNum').textContent = days;
+            document.getElementById('countdownLabel').textContent = '距离暑假还有';
+        }
+        updateCountdown();
+
         // ===== 菜单 =====
         function toggleMenu() { document.getElementById('navLinks').classList.toggle('active'); }
         document.querySelectorAll('.nav-links a').forEach(a => a.addEventListener('click', () => document.getElementById('navLinks').classList.remove('active')));
-        function shareWebsite() { navigator.clipboard.writeText(window.location.href).then(() => alert('✅ 网站链接已复制！快粘贴给朋友吧！😊')); }
+
+        // ===== 分享 =====
+        function copyLink() { navigator.clipboard.writeText(window.location.href).then(() => alert('✅ 链接已复制！快去粘贴吧！')); }
+        function shareTo(platform) { copyLink(); }
 
         // ===== 猜数字 =====
         let randomNumber = Math.floor(Math.random()*100)+1, guessCount = 0;
@@ -449,15 +493,46 @@
             input.value=''; input.focus();
         }
 
-        // ===== 回到顶部 =====
-        function scrollToTop() { window.scrollTo({top:0,behavior:'smooth'}); }
-        window.addEventListener('scroll', () => { document.getElementById('backToTop').style.display = window.scrollY>300?'flex':'none'; });
+        // ===== 贪吃蛇 =====
+        const snakeCanvas = document.getElementById('snakeCanvas');
+        const sctx = snakeCanvas.getContext('2d');
+        let snake = [], food = {}, sd = {x:1,y:0}, snakeScore = 0, snakeLoop = null;
+        function startSnake() {
+            snake = [{x:10,y:15},{x:9,y:15},{x:8,y:15}]; sd = {x:1,y:0}; snakeScore = 0;
+            document.getElementById('snakeScore').textContent = '0';
+            placeFood();
+            if(snakeLoop) clearInterval(snakeLoop);
+            snakeLoop = setInterval(drawSnake, 120);
+        }
+        function placeFood() { food = {x: Math.floor(Math.random()*20), y: Math.floor(Math.random()*20)}; }
+        function drawSnake() {
+            sctx.fillStyle = '#0a0e17'; sctx.fillRect(0,0,300,300);
+            // 蛇
+            snake.forEach((s,i) => {
+                sctx.fillStyle = i === 0 ? '#00d4ff' : '#0099bb';
+                sctx.fillRect(s.x*15+1, s.y*15+1, 13, 13);
+            });
+            // 食物
+            sctx.fillStyle = '#ff6b6b'; sctx.fillRect(food.x*15+1, food.y*15+1, 13, 13);
+            // 移动
+            const head = {x: snake[0].x + sd.x, y: snake[0].y + sd.y};
+            if(head.x < 0 || head.x > 19 || head.y < 0 || head.y > 19 || snake.some(s => s.x === head.x && s.y === head.y)) {
+                clearInterval(snakeLoop); alert('💀 撞了！得分：' + snakeScore); return;
+            }
+            snake.unshift(head);
+            if(head.x === food.x && head.y === food.y) { snakeScore++; document.getElementById('snakeScore').textContent = snakeScore; placeFood(); }
+            else snake.pop();
+        }
+        document.addEventListener('keydown', (e) => {
+            if(e.key === 'ArrowUp' && sd.y !== 1) sd = {x:0,y:-1};
+            else if(e.key === 'ArrowDown' && sd.y !== -1) sd = {x:0,y:1};
+            else if(e.key === 'ArrowLeft' && sd.x !== 1) sd = {x:-1,y:0};
+            else if(e.key === 'ArrowRight' && sd.x !== -1) sd = {x:1,y:0};
+        });
+        startSnake();
 
         // ===== 深色模式 =====
-        let darkMode = localStorage.getItem('darkMode') === 'true';
-        function applyDarkMode() { document.getElementById('darkModeBtn').textContent = darkMode?'☀️':'🌙'; }
-        function toggleDarkMode() { darkMode=!darkMode; localStorage.setItem('darkMode',darkMode); applyDarkMode(); }
-        applyDarkMode();
+        function toggleDarkMode() { alert('深色模式：网站本身就是深色科技风啦！'); }
 
         // ===== 时间 =====
         function updateTime() {
@@ -467,7 +542,7 @@
         }
         updateTime(); setInterval(updateTime, 1000);
 
-        // ===== 天气（自动定位） =====
+        // ===== 天气 =====
         async function loadWeather() {
             const el = document.getElementById('weather');
             try {
@@ -476,15 +551,11 @@
                 const d = await r.json();
                 const code = d.current.weather_code;
                 let t='晴',i='☀️';
-                if(code===0){t='晴';i='☀️';} else if(code<=3){t='多云';i='⛅';}
-                else if(code<=60){t='小雨';i='🌧️';} else if(code<=80){t='大雨';i='🌧️';} else {t='阴';i='☁️';}
+                if(code===0){t='晴';i='☀️';} else if(code<=3){t='多云';i='⛅';} else if(code<=60){t='小雨';i='🌧️';} else if(code<=80){t='大雨';i='🌧️';} else {t='阴';i='☁️';}
                 el.textContent = '附近 '+i+' '+t+' '+Math.round(d.current.temperature_2m)+'°C';
             } catch(e) {
-                try {
-                    const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=34.62&longitude=112.45&current=temperature_2m,weather_code&timezone=Asia/Shanghai');
-                    const d = await r.json();
-                    el.textContent = '洛阳 ☀️ 晴 '+Math.round(d.current.temperature_2m)+'°C';
-                } catch(e2) { el.textContent = '天气获取失败'; }
+                try { const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=34.62&longitude=112.45&current=temperature_2m,weather_code&timezone=Asia/Shanghai'); const d = await r.json(); el.textContent = '洛阳 ☀️ 晴 '+Math.round(d.current.temperature_2m)+'°C'; }
+                catch(e2) { el.textContent = '天气获取失败'; }
             }
         }
         loadWeather();
@@ -573,10 +644,8 @@
         // ===== 平滑滚动 =====
         document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',function(e){e.preventDefault();const t=document.querySelector(this.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth'});});});
 
-        // ===== PWA service worker =====
-        if('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js').catch(()=>{});
-        }
+        // ===== PWA =====
+        if('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js').catch(()=>{}); }
     </script>
 </body>
 </html>
