@@ -10,8 +10,9 @@ body{background:#0a0e17;color:#e0e6ed;font-family:-apple-system,BlinkMacSystemFo
 @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}
 h1{font-size:48px;color:#00d4ff;margin:0 0 10px;}
 p{color:#8892b0;font-size:16px;margin:5px 0;}
-a{display:inline-block;margin-top:25px;background:#00d4ff;color:#0a0e17;padding:12px 30px;border-radius:25px;text-decoration:none;font-weight:600;transition:transform .2s;}
-a:hover{transform:translateY(-2px);}
+.btn{display:inline-block;margin-top:25px;background:#00d4ff;color:#0a0e17;padding:12px 30px;border-radius:25px;text-decoration:none;font-weight:600;transition:transform .2s;margin-left:8px;}
+.btn:hover{transform:translateY(-2px);}
+.btn2{background:#1a2a3a;color:#8892b0;}
 </style>
 </head>
 <body>
@@ -19,6 +20,9 @@ a:hover{transform:translateY(-2px);}
 <h1>404</h1>
 <p>球球把这页吃了！</p>
 <p>你要找的页面不存在或被挪走了</p>
-<a href="/my-website/">🏠 回到首页</a>
+<div>
+<a href="/" class="btn">🏠 回到首页</a>
+<a href="javascript:history.back()" class="btn btn2">↩️ 返回上一页</a>
+</div>
 </body>
 </html>
