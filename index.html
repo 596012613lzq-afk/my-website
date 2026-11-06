@@ -12,7 +12,7 @@
     <meta property="og:url" content="https://laotou.is-a.dev/">
     <meta name="twitter:card" content="summary_large_image">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏠</text></svg>">
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="manifest.json?v=6">
     <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -515,7 +515,7 @@
         function quickAsk(q){document.getElementById('chatInput').value=q;sendChat();}
         document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',function(e){e.preventDefault();const t=document.querySelector(this.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth'});});});
         (function(){const now=new Date();const m=now.getMonth()+1,d=now.getDate();let accent='#00d4ff';if(m===1&&d>=20&&d<=25)accent='#ffd700';else if(m===3&&d>=7&&d<=15)accent='#ff6b6b';else if(m===5&&d>=1&&d<=5)accent='#ff4444';else if(m===6&&d>=1&&d<=2)accent='#ff6b9d';else if(m===10&&d>=1&&d<=7)accent='#ff3333';else if(m===12&&d>=20&&d<=26)accent='#4caf50';document.documentElement.style.setProperty('--accent',accent);const style=document.createElement('style');style.textContent=`.logo,.card h2,.diary-date,.now-card,.diary-item,.link-item:hover,.guess-correct{color:${accent};}.btn,.hero-btn{color:#0a0e17!important;background:${accent};}.now-card,.diary-item{border-left-color:${accent};}.quote-bar{border-left-color:${accent};}#progressBar{background:linear-gradient(90deg,${accent},#00ff88);}`;document.head.appendChild(style);})();
-        if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{});}
+        if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js?v=6').catch(()=>{});}
     </script>
 </body>
 </html>
