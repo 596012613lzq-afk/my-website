@@ -426,10 +426,28 @@
         <!-- 在线音乐播放器 -->
         <section class="game-container" id="music">
             <h2>🎵 在线音乐播放器</h2>
-            <p style="color:#8892b0;font-size:13px;margin-bottom:15px;">网易云音乐在线播放，打开就能听～</p>
-            <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" 
-                src="https://music.163.com/outchain/player?type=0&id=12639091339&auto=0&height=450" 
-                style="width:100%;height:450px;border-radius:10px;background:rgba(0,0,0,0.3);"></iframe>
+            <p style="color:#8892b0;font-size:13px;margin-bottom:15px;">国风轻音乐，打开就能听～</p>
+            <div style="background:linear-gradient(135deg,rgba(0,212,255,0.1),rgba(0,255,136,0.1));border-radius:12px;padding:20px;">
+                <div style="text-align:center;margin-bottom:15px;">
+                    <div style="font-size:48px;" id="musicIcon">🎵</div>
+                    <div style="color:#00d4ff;font-size:16px;font-weight:600;margin-top:8px;" id="nowPlaying">选择一首歌</div>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:15px;">
+                    <button onclick="playSong(0)" class="song-btn" data-i="0" style="background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.2);border-radius:8px;padding:12px;color:#e0e6ed;cursor:pointer;text-align:left;">
+                        🎹 高山流水<br><span style="font-size:11px;color:#5a6a7a;">古筝纯音乐</span>
+                    </button>
+                    <button onclick="playSong(1)" class="song-btn" data-i="1" style="background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.2);border-radius:8px;padding:12px;color:#e0e6ed;cursor:pointer;text-align:left;">
+                        🪈 梅花三弄<br><span style="font-size:11px;color:#5a6a7a;">笛子轻音乐</span>
+                    </button>
+                    <button onclick="playSong(2)" class="song-btn" data-i="2" style="background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.2);border-radius:8px;padding:12px;color:#e0e6ed;cursor:pointer;text-align:left;">
+                        🎻 汉宫秋月<br><span style="font-size:11px;color:#5a6a7a;">二胡纯音乐</span>
+                    </button>
+                    <button onclick="playSong(3)" class="song-btn" data-i="3" style="background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.2);border-radius:8px;padding:12px;color:#e0e6ed;cursor:pointer;text-align:left;">
+                        🎸 彩云追月<br><span style="font-size:11px;color:#5a6a7a;">民乐合奏</span>
+                    </button>
+                </div>
+                <audio id="musicPlayerAudio" controls style="width:100%;"></audio>
+            </div>
         </section>
 
         <section class="game-container" id="game">
@@ -868,6 +886,23 @@
         function quickAsk(q) {
             document.getElementById('chatInput').value = q;
             sendChat();
+        }
+
+        // ===== 音乐播放器 =====
+        const songList = [
+            {name:"高山流水", url:"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"},
+            {name:"梅花三弄", url:"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3"},
+            {name:"汉宫秋月", url:"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3"},
+            {name:"彩云追月", url:"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3"}
+        ];
+        function playSong(i) {
+            const audio = document.getElementById('musicPlayerAudio');
+            audio.src = songList[i].url;
+            audio.play().catch(()=>{});
+            document.getElementById('nowPlaying').textContent = '🎵 正在播放：' + songList[i].name;
+            document.querySelectorAll('.song-btn').forEach((btn, idx) => {
+                btn.style.background = idx === i ? 'rgba(0,212,255,0.3)' : 'rgba(0,212,255,0.1)';
+            });
         }
 
         // ===== 平滑滚动 =====
