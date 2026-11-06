@@ -392,20 +392,8 @@
         </section>
         <section class="game-container" id="music">
             <h2>🎵 在线音乐播放器</h2>
-            <p style="color:#8892b0;font-size:13px;margin-bottom:15px;">国风轻音乐，打开就能听～</p>
-            <div style="background:linear-gradient(135deg,rgba(0,212,255,0.1),rgba(0,255,136,0.1));border-radius:12px;padding:20px;">
-                <div style="text-align:center;margin-bottom:15px;">
-                    <div style="font-size:48px;" id="musicIcon">🎵</div>
-                    <div style="color:#00d4ff;font-size:16px;font-weight:600;margin-top:8px;" id="nowPlaying">选择一首歌</div>
-                </div>
-                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:15px;">
-                    <button onclick="playSong(0)" class="song-btn" style="background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.2);border-radius:8px;padding:12px;color:#e0e6ed;cursor:pointer;text-align:left;">🎹 高山流水<br><span style="font-size:11px;color:#5a6a7a;">古筝纯音乐</span></button>
-                    <button onclick="playSong(1)" class="song-btn" style="background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.2);border-radius:8px;padding:12px;color:#e0e6ed;cursor:pointer;text-align:left;">🪈 梅花三弄<br><span style="font-size:11px;color:#5a6a7a;">笛子轻音乐</span></button>
-                    <button onclick="playSong(2)" class="song-btn" style="background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.2);border-radius:8px;padding:12px;color:#e0e6ed;cursor:pointer;text-align:left;">🎻 汉宫秋月<br><span style="font-size:11px;color:#5a6a7a;">二胡纯音乐</span></button>
-                    <button onclick="playSong(3)" class="song-btn" style="background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.2);border-radius:8px;padding:12px;color:#e0e6ed;cursor:pointer;text-align:left;">🎸 彩云追月<br><span style="font-size:11px;color:#5a6a7a;">民乐合奏</span></button>
-                </div>
-                <audio id="musicPlayerAudio" controls style="width:100%;"></audio>
-            </div>
+            <p style="color:#8892b0;font-size:13px;margin-bottom:15px;">国风热歌榜 · 点击直接播放～</p>
+            <iframe src="https://music.163.com/outchain/player?type=0&id=13103739035&auto=0&height=430" width="100%" height="450" frameborder="0" style="border-radius:10px;overflow:hidden;"></iframe>
         </section>
         <section class="game-container" id="game">
             <h2>🎮 游戏区</h2>
@@ -459,8 +447,8 @@
     <button class="fab dark-mode-btn" onclick="toggleDarkMode()" id="darkModeBtn">🌙</button>
     <button class="fab back-to-top" onclick="scrollToTop()" id="backToTop">↑</button>
     <script>
-        const typeTexts = ["记录生活、爱好和日常 ✨","一个用纯代码写的小站 💻","会玩游戏、会撸狗、会吃辣条 🐶","欢迎随便点点看 🎮"];
-        let typeIdx = 0, charIdx = 0, deleting = false;
+        const typeTexts=["记录生活、爱好和日常 ✨","一个用纯代码写的小站 💻","会玩游戏、会撸狗、会吃辣条 🐶","欢迎随便点点看 🎮"];
+        let typeIdx=0,charIdx=0,deleting=false;
         function typeLoop(){const el=document.getElementById('typewriter');const current=typeTexts[typeIdx];if(!deleting){el.innerHTML=current.substring(0,++charIdx)+'<span class="cursor">&nbsp;</span>';if(charIdx===current.length){deleting=true;setTimeout(typeLoop,2000);return;}setTimeout(typeLoop,80);}else{el.innerHTML=current.substring(0,--charIdx)+'<span class="cursor">&nbsp;</span>';if(charIdx===0){deleting=false;typeIdx=(typeIdx+1)%typeTexts.length;}setTimeout(typeLoop,40);}}
         typeLoop();
         const canvas=document.getElementById('particles-canvas');const ctx=canvas.getContext('2d');let particles=[];
@@ -521,12 +509,10 @@
         function importData(e){const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=function(ev){try{const data=JSON.parse(ev.target.result);if(data.blogs)localStorage.setItem('blogs',JSON.stringify(data.blogs));if(data.diaries)localStorage.setItem('diaries',JSON.stringify(data.diaries));renderBlogs();renderDiaries();alert('📂 导入成功！');}catch(err){alert('❌ 文件格式不对');}};reader.readAsText(file);}
         function updateDashboard(){const pv=document.getElementById('busuanzi_value_site_pv');const uv=document.getElementById('busuanzi_value_site_uv');if(pv)document.getElementById('dashPV').textContent=pv.textContent||'...';if(uv)document.getElementById('dashUV').textContent=uv.textContent||'...';document.getElementById('dashDays').textContent=uptime;document.getElementById('dashOnline').textContent=Math.floor(Math.random()*4)+1;const total=parseInt(pv?.textContent||'0');document.getElementById('dashYou').textContent=total>0?(total-Math.floor(Math.random()*10)):'?';}
         setTimeout(updateDashboard,2000);
-        const chatbotRules=[{keys:['你好','嗨','hi','hello','在吗'],reply:'你好呀！👋 今天过得怎么样？'},{keys:['你是谁','名字','介绍'],reply:'我是小希助手 🤖，住在这个小站里，有什么问题都可以问我！'},{keys:['网站','有什么','功能','玩什么'],reply:'这个小站有：🎮 猜数字、🐍 贪吃蛇、📔 日记、📝 博客、💬 留言板，还有一只跟着你跑的小狗！按 K 键有彩蛋哦～'},{keys:['球球','狗','宠物'],reply:'球球是小希的小狗！🐶 它会跟着你的鼠标在页面上跑来跑去，超可爱的～'},{keys:['几岁','年龄','多大'],reply:'小希是二年级小学生，所以...大概 8-9 岁吧！'},{keys:['小希','作者','站长'],reply:'小希是这个网站的主人，二年级学生，喜欢玩游戏、撸狗、吃辣条！'},{keys:['游戏','玩'],reply:'去游戏区玩猜数字和贪吃蛇吧！🎮 猜数字在"游戏"板块，按方向键控制贪吃蛇。'},{keys:['留言','评论','说话'],reply:'拉到最下面有留言板，用 GitHub 账号就能留言啦！💬'},{keys:['彩蛋','k','秘密'],reply:'按键盘上的 K 键试试！🎉 会有惊喜哦～'},{keys:['谢谢','感谢','thx'],reply:'不客气！😊 有问题随时找我～'},{keys:['天气','下雨','晴天'],reply:'看页面顶部的天气栏！☁️ 如果下雨的话，页面上还会飘雨滴呢～'},{keys:['音乐','听歌','播放'],reply:'去音乐板块点一首歌试试吧！🎵'}];
+        const chatbotRules=[{keys:['你好','嗨','hi','hello','在吗'],reply:'你好呀！👋 今天过得怎么样？'},{keys:['你是谁','名字','介绍'],reply:'我是小希助手 🤖，住在这个小站里，有什么问题都可以问我！'},{keys:['网站','有什么','功能','玩什么'],reply:'这个小站有：🎮 猜数字、🐍 贪吃蛇、📔 日记、📝 博客、💬 留言板，还有一只跟着你跑的小狗！按 K 键有彩蛋哦～'},{keys:['球球','狗','宠物'],reply:'球球是小希的小狗！🐶 它会跟着你的鼠标在页面上跑来跑去，超可爱的～'},{keys:['几岁','年龄','多大'],reply:'小希是二年级小学生，所以...大概 8-9 岁吧！'},{keys:['小希','作者','站长'],reply:'小希是这个网站的主人，二年级学生，喜欢玩游戏、撸狗、吃辣条！'},{keys:['游戏','玩'],reply:'去游戏区玩猜数字和贪吃蛇吧！🎮 猜数字在"游戏"板块，按方向键控制贪吃蛇。'},{keys:['留言','评论','说话'],reply:'拉到最下面有留言板，用 GitHub 账号就能留言啦！💬'},{keys:['彩蛋','k','秘密'],reply:'按键盘上的 K 键试试！🎉 会有惊喜哦～'},{keys:['谢谢','感谢','thx'],reply:'不客气！😊 有问题随时找我～'},{keys:['天气','下雨','晴天'],reply:'看页面顶部的天气栏！☁️ 如果下雨的话，页面上还会飘雨滴呢～'},{keys:['音乐','听歌','播放'],reply:'去音乐板块听听国风热歌吧！🎵'}];
         function getBotReply(msg){msg=msg.toLowerCase();for(const rule of chatbotRules){if(rule.keys.some(k=>msg.includes(k.toLowerCase())))return rule.reply;}return '嗯嗯～这个我还不太懂 😅 你可以问我：你是谁？网站有什么？球球是谁？或者按 K 键找彩蛋！';}
         function sendChat(){const input=document.getElementById('chatInput');const text=input.value.trim();if(!text)return;const box=document.getElementById('chatBox');box.innerHTML+='<div style="margin-bottom:10px;text-align:right;"><div style="display:inline-block;background:rgba(0,212,255,0.3);color:#fff;padding:8px 12px;border-radius:10px 10px 0 10px;font-size:14px;">'+text.replace(/</g,'&lt;')+'</div></div>';input.value='';box.scrollTop=box.scrollHeight;setTimeout(()=>{box.innerHTML+='<div style="margin-bottom:10px;"><div style="display:inline-block;background:rgba(0,212,255,0.15);color:#00d4ff;padding:8px 12px;border-radius:10px 10px 10px 0;font-size:14px;">🤖 '+getBotReply(text)+'</div></div>';box.scrollTop=box.scrollHeight;},600);}
         function quickAsk(q){document.getElementById('chatInput').value=q;sendChat();}
-        const songList=[{name:"高山流水",url:"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"},{name:"梅花三弄",url:"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3"},{name:"汉宫秋月",url:"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3"},{name:"彩云追月",url:"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3"}];
-        function playSong(i){const audio=document.getElementById('musicPlayerAudio');audio.src=songList[i].url;audio.play().catch(()=>{});document.getElementById('nowPlaying').textContent='🎵 正在播放：'+songList[i].name;document.querySelectorAll('.song-btn').forEach((btn,idx)=>{btn.style.background=idx===i?'rgba(0,212,255,0.3)':'rgba(0,212,255,0.1)';});}
         document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',function(e){e.preventDefault();const t=document.querySelector(this.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth'});});});
         (function(){const now=new Date();const m=now.getMonth()+1,d=now.getDate();let accent='#00d4ff';if(m===1&&d>=20&&d<=25)accent='#ffd700';else if(m===3&&d>=7&&d<=15)accent='#ff6b6b';else if(m===5&&d>=1&&d<=5)accent='#ff4444';else if(m===6&&d>=1&&d<=2)accent='#ff6b9d';else if(m===10&&d>=1&&d<=7)accent='#ff3333';else if(m===12&&d>=20&&d<=26)accent='#4caf50';document.documentElement.style.setProperty('--accent',accent);const style=document.createElement('style');style.textContent=`.logo,.card h2,.diary-date,.now-card,.diary-item,.link-item:hover,.guess-correct{color:${accent};}.btn,.hero-btn{color:#0a0e17!important;background:${accent};}.now-card,.diary-item{border-left-color:${accent};}.quote-bar{border-left-color:${accent};}#progressBar{background:linear-gradient(90deg,${accent},#00ff88);}`;document.head.appendChild(style);})();
         if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{});}
