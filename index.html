@@ -110,8 +110,10 @@
         .hobby-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
         .hobby-tag { padding: 5px 12px; background: rgba(0,212,255,0.1); border-radius: 15px; font-size: 12px; color: #00d4ff; }
         .now-card { border-left: 3px solid #00d4ff; }
-        .now-row { display: flex; align-items: center; gap: 10px; padding: 6px 0; font-size: 14px; color: #8892b0; }
+        .now-row { display: flex; align-items: center; gap: 10px; padding: 6px 0; font-size: 14px; color: #8892b0; cursor: pointer; border-radius: 6px; }
+        .now-row:hover { background: rgba(0,212,255,0.08); }
         .now-row .emoji { font-size: 20px; }
+        .now-tip { font-size: 11px; color: #5a6a7a; margin-top: 8px; }
         .places-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
         .place-tag { padding: 6px 14px; background: rgba(0,212,255,0.1); border-radius: 20px; font-size: 13px; color: #00d4ff; border: 1px solid rgba(0,212,255,0.2); }
         .photo-wall { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px; }
@@ -120,6 +122,13 @@
             font-size: 36px; cursor: pointer; transition: transform 0.3s; background: rgba(0,212,255,0.08);
         }
         .photo-item:hover { transform: scale(1.08); }
+        #photoView {
+            display: none; position: fixed; inset: 0; z-index: 10001; background: rgba(5,8,15,0.9);
+            align-items: center; justify-content: center; flex-direction: column; gap: 14px; cursor: pointer;
+        }
+        #photoView .big { font-size: 120px; animation: popIn 0.25s ease-out; }
+        #photoView .cap { color: #8892b0; font-size: 14px; }
+        @keyframes popIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         .countdown-box { text-align: center; padding: 10px 0; }
         .countdown-num { font-size: 32px; font-weight: 700; color: #00d4ff; }
         .countdown-label { font-size: 13px; color: #8892b0; margin-top: 4px; }
@@ -209,6 +218,7 @@
         }
         .dark-mode-btn { bottom: 15px; left: 15px; background: #1a2a3a; color: #e0e6ed; }
         .back-to-top { bottom: 75px; right: 15px; background: #1a2a3a; color: #e0e6ed; display: none; }
+        .install-btn { bottom: 133px; right: 15px; background: #00ff88; color: #0a0e17; }
         .menu-toggle { display: none; background: none; border: none; color: #00d4ff; font-size: 28px; cursor: pointer; }
         .cursor-particle {
             position: fixed; width: 6px; height: 6px; border-radius: 50%;
@@ -258,6 +268,7 @@
     <canvas id="particles-canvas"></canvas>
     <canvas id="rain-canvas"></canvas>
     <div id="pet">🐶</div>
+    <div id="photoView" onclick="this.style.display='none'"><div class="big" id="photoBig">🐶</div><div class="cap">点任意处关闭</div></div>
     <div id="easter-egg">
         <h2>🎉 彩蛋！</h2>
         <p>你找到了小希的秘密！<br>球球说：汪汪汪～🐶<br>（按 K 键可以随时再触发）</p>
@@ -320,28 +331,27 @@
             </div>
             <div class="card now-card">
                 <h2>现在正在</h2>
-                <div class="now-row"><span class="emoji">🎮</span><span>最近在玩：迷你世界</span></div>
-                <div class="now-row"><span class="emoji">🎵</span><span>最近在听：轻音乐</span></div>
-                <div class="now-row"><span class="emoji">🐶</span><span>今天在：撸球球</span></div>
+                <div id="nowList"></div>
+                <div class="now-tip">💡 点任意一条可以自己改</div>
             </div>
             <div class="card">
                 <h2>📸 照片墙</h2>
                 <div class="photo-wall">
-                    <div class="photo-item" title="球球">🐶</div>
-                    <div class="photo-item" title="游戏">🎮</div>
-                    <div class="photo-item" title="辣条">🍜</div>
-                    <div class="photo-item" title="足球">⚽</div>
-                    <div class="photo-item" title="书">📚</div>
-                    <div class="photo-item" title="音乐">🎵</div>
-                    <div class="photo-item" title="上海">🌆</div>
-                    <div class="photo-item" title="德宏">🌴</div>
+                    <div class="photo-item" data-cap="球球">🐶</div>
+                    <div class="photo-item" data-cap="游戏">🎮</div>
+                    <div class="photo-item" data-cap="辣条">🍜</div>
+                    <div class="photo-item" data-cap="足球">⚽</div>
+                    <div class="photo-item" data-cap="书">📚</div>
+                    <div class="photo-item" data-cap="音乐">🎵</div>
+                    <div class="photo-item" data-cap="上海">🌆</div>
+                    <div class="photo-item" data-cap="德宏">🌴</div>
                 </div>
             </div>
             <div class="card">
                 <h2>⏳ 倒计时</h2>
                 <div class="countdown-box">
                     <div class="countdown-num" id="countdownNum">--</div>
-                    <div class="countdown-label" id="countdownLabel">距离暑假还有</div>
+                    <div class="countdown-label" id="countdownLabel">距离下一个假期还有</div>
                 </div>
             </div>
             <div class="card">
@@ -473,6 +483,7 @@
             <button class="share-btn" style="background:#00d4ff;color:#0a0e17;" onclick="copyLink()">📋 复制链接</button>
         </div>
     </footer>
+    <button class="fab install-btn" id="installBtn" onclick="doInstall()" title="安装到桌面">📲</button>
     <button class="fab dark-mode-btn" onclick="toggleDarkMode()" id="darkModeBtn">🌙</button>
     <button class="fab back-to-top" onclick="scrollToTop()" id="backToTop">↑</button>
     <script>
@@ -509,11 +520,18 @@
         function scrollToTop(){window.scrollTo({top:0,behavior:'smooth'});}
         const siteStart=new Date('2026-11-05');const uptime=Math.floor((Date.now()-siteStart.getTime())/86400000);
         document.getElementById('uptimeDays').textContent=uptime;
-        function updateCountdown(){const now=new Date();let target=new Date(now.getFullYear(),6,1);if(now>target)target=new Date(now.getFullYear()+1,6,1);const days=Math.ceil((target-now)/86400000);document.getElementById('countdownNum').textContent=days;document.getElementById('countdownLabel').textContent='距离暑假还有';}
+        const holidays=[{name:'寒假',m:1,d:20},{name:'春节',m:2,d:6},{name:'清明',m:4,d:4},{name:'暑假',m:7,d:1},{name:'国庆',m:10,d:1},{name:'寒假',m:12,d:25}];
+        function updateCountdown(){
+            const now=new Date();now.setHours(0,0,0,0);
+            let best=null;
+            holidays.forEach(function(h){let t=new Date(now.getFullYear(),h.m-1,h.d);if(t.getTime()<now.getTime())t=new Date(now.getFullYear()+1,h.m-1,h.d);const days=Math.round((t-now)/86400000);if(!best||days<best.days)best={name:h.name,days:days};});
+            document.getElementById('countdownNum').textContent=best.days;
+            document.getElementById('countdownLabel').textContent='距离'+best.name+'还有';
+        }
         updateCountdown();
         function toggleMenu(){document.getElementById('navLinks').classList.toggle('active');}
         document.querySelectorAll('.nav-links a').forEach(a=>a.addEventListener('click',()=>document.getElementById('navLinks').classList.remove('active')));
-        function copyLink(){const url='https://laotou.is-a.dev/';if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(url).then(()=>alert('✅ 链接已复制！快去粘贴吧！')).catch(()=>{prompt('复制这个链接分享给朋友吧：',url);});}else{prompt('复制这个链接分享给朋友吧：',url);}}
+        function copyLink(){const url='https://laotou.is-a.dev/';if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(url).then(()=>alert('✅ 链接已复制！\n\n微信：打开聊天窗口粘贴发送\n小红书/抖音：粘贴到简介或评论区')).catch(()=>{prompt('复制这个链接分享给朋友吧：',url);});}else{prompt('复制这个链接分享给朋友吧：',url);}}
         function shareTo(platform){copyLink();}
         let randomNumber=Math.floor(Math.random()*100)+1,guessCount=0;
         function checkGuess(){const input=document.getElementById('guessInput'),result=document.getElementById('guessResult');const guess=parseInt(input.value);result.style.display='block';if(!guess||guess<1||guess>100){result.className='guess-result guess-hint';result.textContent='⚠️ 请输入1到100之间的数字！';return;}guessCount++;if(guess===randomNumber){result.className='guess-result guess-correct';result.textContent='🎉 恭喜你！猜了 '+guessCount+' 次就猜对了！';randomNumber=Math.floor(Math.random()*100)+1;guessCount=0;input.value='';}else if(guess>randomNumber){result.className='guess-result guess-hint';result.textContent='📉 太大了！往小了猜～';}else{result.className='guess-result guess-hint';result.textContent='📈 太小了！往大了猜～';}input.value='';input.focus();}
@@ -530,6 +548,35 @@
         });
         startSnake();
         function toggleDarkMode(){alert('深色模式：网站本身就是深色科技风啦！');}
+        const nowDefaults=[{e:'🎮',t:'最近在玩：迷你世界'},{e:'🎵',t:'最近在听：轻音乐'},{e:'🐶',t:'今天在：撸球球'}];
+        function renderNow(){
+            let saved=null;
+            try{saved=JSON.parse(localStorage.getItem('nowCards')||'null');}catch(err){saved=null;}
+            const list=(saved&&saved.length?saved:nowDefaults);
+            document.getElementById('nowList').innerHTML=list.map(function(x,i){return '<div class="now-row" onclick="editNow('+i+')"><span class="emoji">'+x.e+'</span><span>'+x.t+'</span></div>';}).join('');
+        }
+        function editNow(i){
+            let saved=null;
+            try{saved=JSON.parse(localStorage.getItem('nowCards')||'null');}catch(err){saved=null;}
+            const list=(saved&&saved.length?saved:nowDefaults.slice());
+            const v=prompt('改一下这条（前面放一个表情，空格后写内容）：',list[i].e+' '+list[i].t);
+            if(v===null)return;
+            const parts=v.trim().split(/\s+/);
+            list[i]={e:parts[0]||list[i].e, t:parts.slice(1).join(' ')||list[i].t};
+            localStorage.setItem('nowCards',JSON.stringify(list));
+            renderNow();
+        }
+        renderNow();
+        document.querySelectorAll('.photo-item').forEach(function(el){
+            el.addEventListener('click',function(){document.getElementById('photoBig').textContent=el.textContent;document.querySelector('#photoView .cap').textContent=el.dataset.cap+' · 点任意处关闭';document.getElementById('photoView').style.display='flex';});
+        });
+        let deferredPrompt=null;
+        window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferredPrompt=e;document.getElementById('installBtn').style.display='flex';});
+        window.addEventListener('appinstalled',function(){document.getElementById('installBtn').style.display='none';});
+        function doInstall(){
+            if(deferredPrompt){deferredPrompt.prompt();deferredPrompt.userChoice.then(function(){deferredPrompt=null;document.getElementById('installBtn').style.display='none';});}
+            else{alert('装到桌面这样做 👇\n\n1. 用【电脑版 Chrome 或 Edge】打开 https://laotou.is-a.dev\n2. 点右上角三个点 ⋮ 菜单\n3. 找到「安装老头的小站…」或「应用 → 安装此网站」\n4. 点安装，桌面就有图标了\n\n手机：用 Chrome 打开，点 ⋮ → 添加到主屏幕');}
+        }
         function updateTime(){const now=new Date();document.getElementById('currentTime').textContent=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');document.getElementById('currentDate').textContent=now.getFullYear()+'年'+(now.getMonth()+1)+'月'+now.getDate()+'日';}
         updateTime();setInterval(updateTime,1000);
         async function loadWeather(){const el=document.getElementById('weather');try{const pos=await new Promise((res,rej)=>navigator.geolocation.getCurrentPosition(res,rej,{timeout:8000}));const r=await fetch('https://api.open-meteo.com/v1/forecast?latitude='+pos.coords.latitude+'&longitude='+pos.coords.longitude+'&current=temperature_2m,weather_code&timezone=auto');const d=await r.json();const code=d.current.weather_code;let t='晴',i='☀️';if(code===0){t='晴';i='☀️';}else if(code<=3){t='多云';i='⛅';}else if(code<=60){t='小雨';i='🌧️';startRain();}else if(code<=80){t='大雨';i='🌧️';startRain();}else{t='阴';i='☁️';}el.textContent='附近 '+i+' '+t+' '+Math.round(d.current.temperature_2m)+'°C';}catch(e){try{const r=await fetch('https://api.open-meteo.com/v1/forecast?latitude=34.62&longitude=112.45&current=temperature_2m,weather_code&timezone=Asia/Shanghai');const d=await r.json();el.textContent='洛阳 ☀️ 晴 '+Math.round(d.current.temperature_2m)+'°C';}catch(e2){el.textContent='天气获取失败';}}}
@@ -546,15 +593,15 @@
         renderBlogs();
         function exportData(){const data={blogs:JSON.parse(localStorage.getItem('blogs')||'[]'),diaries:JSON.parse(localStorage.getItem('diaries')||'[]')};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='laotou-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();alert('💾 备份文件已下载，换设备时用"导入"恢复');}
         function importData(e){const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=function(ev){try{const data=JSON.parse(ev.target.result);if(data.blogs)localStorage.setItem('blogs',JSON.stringify(data.blogs));if(data.diaries)localStorage.setItem('diaries',JSON.stringify(data.diaries));renderBlogs();renderDiaries();alert('📂 导入成功！');}catch(err){alert('❌ 文件格式不对');}};reader.readAsText(file);}
-        function updateDashboard(){const pv=document.getElementById('busuanzi_value_site_pv');const uv=document.getElementById('busuanzi_value_site_uv');if(pv)document.getElementById('dashPV').textContent=pv.textContent||'...';if(uv)document.getElementById('dashUV').textContent=uv.textContent||'...';document.getElementById('dashDays').textContent=uptime;const total=parseInt(pv?.textContent||'0');document.getElementById('dashYou').textContent=total>0?(total-Math.floor(Math.random()*10)):'?';}
+        function updateDashboard(){const pv=document.getElementById('busuanzi_value_site_pv');const uv=document.getElementById('busuanzi_value_site_uv');if(pv)document.getElementById('dashPV').textContent=pv.textContent||'...';if(uv)document.getElementById('dashUV').textContent=uv.textContent||'...';document.getElementById('dashDays').textContent=uptime;const total=parseInt(pv?pv.textContent:'0')||0;document.getElementById('dashYou').textContent=total>0?total:'?';}
         setTimeout(updateDashboard,2000);
-        const chatbotRules=[{keys:['你好','嗨','hi','hello','在吗'],reply:'你好呀！👋 今天过得怎么样？'},{keys:['你是谁','名字','介绍'],reply:'我是小希助手 🤖，住在这个小站里，有什么问题都可以问我！'},{keys:['网站','有什么','功能','玩什么'],reply:'这个小站有：🎮 猜数字、🐍 贪吃蛇、📔 日记、📝 博客、💬 留言板，还有一只跟着你跑的小狗！按 K 键有彩蛋哦～'},{keys:['球球','狗','宠物'],reply:'球球是小希的小狗！🐶 它会跟着你的鼠标在页面上跑来跑去，超可爱的～'},{keys:['几岁','年龄','多大'],reply:'小希是二年级小学生，所以...大概 8-9 岁吧！'},{keys:['小希','作者','站长'],reply:'小希是这个网站的主人，二年级学生，喜欢玩游戏、撸狗、吃辣条！'},{keys:['游戏','玩','贪吃蛇'],reply:'去游戏区玩猜数字和贪吃蛇吧！🎮 电脑用方向键，手机点方向按钮就能玩～'},{keys:['留言','评论','说话'],reply:'拉到最下面有留言板，用 GitHub 账号就能留言啦！💬'},{keys:['彩蛋','k','秘密'],reply:'按键盘上的 K 键试试！🎉 会有惊喜哦～'},{keys:['谢谢','感谢','thx'],reply:'不客气！😊 有问题随时找我～'},{keys:['天气','下雨','晴天'],reply:'看页面顶部的天气栏！☁️ 如果下雨的话，页面上还会飘雨滴呢～'},{keys:['音乐','听歌','播放'],reply:'去音乐板块听听国风热歌吧！🎵 直接点歌就能播～'}];
+        const chatbotRules=[{keys:['你好','嗨','hi','hello','在吗'],reply:'你好呀！👋 今天过得怎么样？'},{keys:['你是谁','名字','介绍'],reply:'我是小希助手 🤖，住在这个小站里，有什么问题都可以问我！'},{keys:['网站','有什么','功能','玩什么'],reply:'这个小站有：🎮 猜数字、🐍 贪吃蛇、📔 日记、📝 博客、💬 留言板，还有一只跟着你跑的小狗！按 K 键有彩蛋哦～'},{keys:['球球','狗','宠物'],reply:'球球是小希的小狗！🐶 它会跟着你的鼠标在页面上跑来跑去，超可爱的～'},{keys:['几岁','年龄','多大'],reply:'小希是二年级小学生，所以...大概 8-9 岁吧！'},{keys:['小希','作者','站长'],reply:'小希是这个网站的主人，二年级学生，喜欢玩游戏、撸狗、吃辣条！'},{keys:['游戏','玩','贪吃蛇'],reply:'去游戏区玩猜数字和贪吃蛇吧！🎮 电脑用方向键，手机点方向按钮就能玩～'},{keys:['留言','评论','说话'],reply:'拉到最下面有留言板，用 GitHub 账号就能留言啦！💬'},{keys:['彩蛋','k','秘密'],reply:'按键盘上的 K 键试试！🎉 会有惊喜哦～'},{keys:['谢谢','感谢','thx'],reply:'不客气！😊 有问题随时找我～'},{keys:['天气','下雨','晴天'],reply:'看页面顶部的天气栏！☁️ 如果下雨的话，页面上还会飘雨滴呢～'},{keys:['音乐','听歌','播放'],reply:'去音乐板块听听国风热歌吧！🎵 直接点歌就能播～'},{keys:['安装','桌面','app'],reply:'想装到桌面上？点右下角那个绿色 📲 按钮，我把步骤写好了！'}];
         function getBotReply(msg){msg=msg.toLowerCase();for(const rule of chatbotRules){if(rule.keys.some(k=>msg.includes(k.toLowerCase())))return rule.reply;}return '嗯嗯～这个我还不太懂 😅 你可以问我：你是谁？网站有什么？球球是谁？或者按 K 键找彩蛋！';}
         function sendChat(){const input=document.getElementById('chatInput');const text=input.value.trim();if(!text)return;const box=document.getElementById('chatBox');box.innerHTML+='<div style="margin-bottom:10px;text-align:right;"><div style="display:inline-block;background:rgba(0,212,255,0.3);color:#fff;padding:8px 12px;border-radius:10px 10px 0 10px;font-size:14px;">'+text.replace(/</g,'&lt;')+'</div></div>';input.value='';box.scrollTop=box.scrollHeight;setTimeout(()=>{box.innerHTML+='<div style="margin-bottom:10px;"><div style="display:inline-block;background:rgba(0,212,255,0.15);color:#00d4ff;padding:8px 12px;border-radius:10px 10px 10px 0;font-size:14px;">🤖 '+getBotReply(text)+'</div></div>';box.scrollTop=box.scrollHeight;},600);}
         function quickAsk(q){document.getElementById('chatInput').value=q;sendChat();}
         document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',function(e){e.preventDefault();const t=document.querySelector(this.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth'});});});
         (function(){const now=new Date();const m=now.getMonth()+1,d=now.getDate();let accent='#00d4ff';if(m===1&&d>=20&&d<=25)accent='#ffd700';else if(m===3&&d>=7&&d<=15)accent='#ff6b6b';else if(m===5&&d>=1&&d<=5)accent='#ff4444';else if(m===6&&d>=1&&d<=2)accent='#ff6b9d';else if(m===10&&d>=1&&d<=7)accent='#ff3333';else if(m===12&&d>=20&&d<=26)accent='#4caf50';document.documentElement.style.setProperty('--accent',accent);const style=document.createElement('style');style.textContent=`.logo,.card h2,.diary-date,.now-card,.diary-item,.link-item:hover,.guess-correct{color:${accent};}.btn,.hero-btn{color:#0a0e17!important;background:${accent};}.now-card,.diary-item{border-left-color:${accent};}.quote-bar{border-left-color:${accent};}#progressBar{background:linear-gradient(90deg,${accent},#00ff88);}`;document.head.appendChild(style);})();
-        if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js?v=6').catch(()=>{});}
+        if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js?v=7').catch(()=>{});}
     </script>
 </body>
 </html>
