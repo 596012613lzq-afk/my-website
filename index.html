@@ -16,6 +16,7 @@
     <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { -webkit-text-size-adjust: 100%; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
             background: #0a0e17; color: #e0e6ed; line-height: 1.6;
@@ -106,6 +107,8 @@
         .card:hover { transform: translateY(-5px) rotateX(3deg); border-color: rgba(0,212,255,0.3); box-shadow: 0 10px 30px rgba(0,212,255,0.15); }
         .card h2 { font-size: 18px; color: #00d4ff; margin-bottom: 12px; font-weight: 600; }
         .card p { color: #8892b0; font-size: 14px; }
+        .hobby-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+        .hobby-tag { padding: 5px 12px; background: rgba(0,212,255,0.1); border-radius: 15px; font-size: 12px; color: #00d4ff; }
         .now-card { border-left: 3px solid #00d4ff; }
         .now-row { display: flex; align-items: center; gap: 10px; padding: 6px 0; font-size: 14px; color: #8892b0; }
         .now-row .emoji { font-size: 20px; }
@@ -173,10 +176,25 @@
         .social-links a:hover { transform: scale(1.15); }
         #snakeCanvas {
             display: block; margin: 0 auto; background: #0a0e17; border-radius: 8px;
-            border: 2px solid rgba(0,212,255,0.2);
+            border: 2px solid rgba(0,212,255,0.2); max-width: 100%; touch-action: none;
         }
         .snake-info { text-align: center; margin: 10px 0; color: #8892b0; font-size: 14px; }
         .snake-info span { color: #00d4ff; font-weight: 600; }
+        .snake-pad {
+            display: grid; grid-template-columns: repeat(3, 60px); grid-template-rows: repeat(3, 60px);
+            gap: 6px; justify-content: center; margin: 16px auto 0; max-width: 100%;
+        }
+        .pad-btn {
+            border: 1px solid rgba(0,212,255,0.25); background: rgba(0,212,255,0.1);
+            color: #00d4ff; border-radius: 10px; font-size: 20px; cursor: pointer;
+            touch-action: manipulation; -webkit-tap-highlight-color: transparent; user-select: none;
+            transition: background 0.1s;
+        }
+        .pad-btn:active { background: rgba(0,212,255,0.35); }
+        .pad-up { grid-column: 2; grid-row: 1; }
+        .pad-left { grid-column: 1; grid-row: 2; }
+        .pad-down { grid-column: 2; grid-row: 3; }
+        .pad-right { grid-column: 3; grid-row: 2; }
         .share-bar { display: flex; gap: 10px; justify-content: center; margin-top: 15px; flex-wrap: wrap; }
         .share-btn {
             padding: 10px 20px; border-radius: 20px; border: none; cursor: pointer;
@@ -207,6 +225,9 @@
         #easter-egg h2 { color: #ffd700; font-size: 24px; margin-bottom: 10px; }
         #easter-egg p { color: #e0e6ed; font-size: 16px; }
         #easter-egg button { margin-top: 15px; background: #ffd700; color: #0a0e17; border: none; padding: 10px 30px; border-radius: 20px; font-size: 16px; cursor: pointer; }
+        #music iframe {
+            width: 100%; height: 470px; border: 0; border-radius: 10px; overflow: hidden; display: block;
+        }
         @media (max-width: 768px) {
             .grid { grid-template-columns: 1fr; }
             .link-list { grid-template-columns: repeat(2, 1fr); }
@@ -216,6 +237,9 @@
             .hero h1 { font-size: 28px; }
             .hero { padding: 35px 20px; }
             .btn { padding: 14px 24px; font-size: 16px; }
+            #music iframe { height: 540px; }
+            .game-container { padding: 18px; }
+            .snake-pad { grid-template-columns: repeat(3, 64px); grid-template-rows: repeat(3, 64px); }
         }
         @media (max-width: 600px) {
             .menu-toggle { display: block; }
@@ -279,6 +303,13 @@
             <div class="card">
                 <h2>关于我</h2>
                 <p>你好，我是小希，一名二年级"废柴"。会玩游戏、会吃辣条、会撸狗，就是不会写作业。这是我自己瞎捣鼓的网站，用来记录我的摆烂日常。</p>
+                <div class="hobby-tags">
+                    <span class="hobby-tag">🎮 玩游戏</span>
+                    <span class="hobby-tag">🎵 听音乐</span>
+                    <span class="hobby-tag">📚 看书</span>
+                    <span class="hobby-tag">⚽ 踢足球</span>
+                    <span class="hobby-tag">🐶 陪球球</span>
+                </div>
                 <div class="social-links">
                     <a href="https://www.douyin.com" target="_blank">🎵</a>
                     <a href="https://www.xiaohongshu.com" target="_blank">📕</a>
@@ -314,10 +345,6 @@
                 </div>
             </div>
             <div class="card">
-                <h2>我的爱好</h2>
-                <p>喜欢玩游戏、听音乐、看书、踢足球，还有和我的小狗球球一起玩。</p>
-            </div>
-            <div class="card">
                 <h2>📍 我去过的地方</h2>
                 <div class="places-grid">
                     <span class="place-tag">洛阳 🏠</span>
@@ -337,10 +364,6 @@
                 <div style="background:rgba(0,255,136,0.08);padding:18px;border-radius:10px;text-align:center;">
                     <div style="font-size:28px;font-weight:700;color:#00ff88;" id="dashUV">0</div>
                     <div style="font-size:12px;color:#8892b0;margin-top:4px;">独立访客</div>
-                </div>
-                <div style="background:rgba(255,193,7,0.08);padding:18px;border-radius:10px;text-align:center;">
-                    <div style="font-size:28px;font-weight:700;color:#ffc107;" id="dashOnline">1</div>
-                    <div style="font-size:12px;color:#8892b0;margin-top:4px;">当前在线</div>
                 </div>
                 <div style="background:rgba(255,107,107,0.08);padding:18px;border-radius:10px;text-align:center;">
                     <div style="font-size:28px;font-weight:700;color:#ff6b6b;" id="dashDays">0</div>
@@ -393,7 +416,7 @@
         <section class="game-container" id="music">
             <h2>🎵 在线音乐播放器</h2>
             <p style="color:#8892b0;font-size:13px;margin-bottom:15px;">国风热歌榜 · 点击直接播放～</p>
-            <iframe src="https://music.163.com/outchain/player?type=0&id=13103739035&auto=0&height=430" width="100%" height="450" frameborder="0" style="border-radius:10px;overflow:hidden;"></iframe>
+            <iframe src="https://music.163.com/outchain/player?type=0&id=13103739035&auto=0&height=430" frameborder="0" allow="autoplay"></iframe>
         </section>
         <section class="game-container" id="game">
             <h2>🎮 游戏区</h2>
@@ -406,9 +429,15 @@
                 <div class="guess-result guess-hint" id="guessResult"></div>
             </div>
             <div>
-                <p style="color:#8892b0;margin-bottom:10px;font-size:14px;"><strong>贪吃蛇：</strong>用方向键控制，吃到豆豆变长！</p>
+                <p style="color:#8892b0;margin-bottom:10px;font-size:14px;"><strong>贪吃蛇：</strong>电脑用方向键，手机点下面的按钮！</p>
                 <canvas id="snakeCanvas" width="300" height="300"></canvas>
                 <div class="snake-info">得分：<span id="snakeScore">0</span> · <button onclick="startSnake()" style="background:none;border:none;color:#00d4ff;cursor:pointer;text-decoration:underline;">重新开始</button></div>
+                <div class="snake-pad">
+                    <button class="pad-btn pad-up" data-dir="up" aria-label="上">▲</button>
+                    <button class="pad-btn pad-left" data-dir="left" aria-label="左">◀</button>
+                    <button class="pad-btn pad-down" data-dir="down" aria-label="下">▼</button>
+                    <button class="pad-btn pad-right" data-dir="right" aria-label="右">▶</button>
+                </div>
             </div>
         </section>
         <section class="game-container" id="blog">
@@ -454,20 +483,24 @@
         const canvas=document.getElementById('particles-canvas');const ctx=canvas.getContext('2d');let particles=[];
         function resize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
         resize();window.addEventListener('resize',resize);
-        for(let i=0;i<60;i++)particles.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*1.5+0.5,vx:(Math.random()-0.5)*0.2,vy:(Math.random()-0.5)*0.2,alpha:Math.random()*0.5+0.2,tw:Math.random()*0.02+0.005,isStar:true});
-        for(let i=0;i<20;i++)particles.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*2+1,vx:(Math.random()-0.5)*0.3,vy:(Math.random()-0.5)*0.3,alpha:Math.random()*0.3+0.1,tw:0,isStar:false});
+        const isMobile=window.matchMedia('(max-width: 768px)').matches;
+        const starCount=isMobile?24:60, orbCount=isMobile?8:20;
+        for(let i=0;i<starCount;i++)particles.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*1.5+0.5,vx:(Math.random()-0.5)*0.2,vy:(Math.random()-0.5)*0.2,alpha:Math.random()*0.5+0.2,tw:Math.random()*0.02+0.005,isStar:true});
+        for(let i=0;i<orbCount;i++)particles.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*2+1,vx:(Math.random()-0.5)*0.3,vy:(Math.random()-0.5)*0.3,alpha:Math.random()*0.3+0.1,tw:0,isStar:false});
         function animate(){ctx.clearRect(0,0,canvas.width,canvas.height);particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>canvas.width)p.vx*=-1;if(p.y<0||p.y>canvas.height)p.vy*=-1;if(p.isStar)p.alpha+=p.tw*(Math.random()>0.5?1:-1);if(p.alpha<0.1)p.alpha=0.1;if(p.alpha>0.7)p.alpha=0.7;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=p.isStar?'rgba(255,255,255,'+p.alpha+')':'rgba(0,212,255,'+p.alpha+')';ctx.fill();});requestAnimationFrame(animate);}
         animate();
         const rainCanvas=document.getElementById('rain-canvas');const rctx=rainCanvas.getContext('2d');let rainDrops=[];
         function resizeRain(){rainCanvas.width=window.innerWidth;rainCanvas.height=window.innerHeight;}
         resizeRain();window.addEventListener('resize',resizeRain);
-        function startRain(){rainCanvas.style.display='block';for(let i=0;i<80;i++)rainDrops.push({x:Math.random()*rainCanvas.width,y:Math.random()*rainCanvas.height,len:Math.random()*15+10,speed:Math.random()*4+6});function drawRain(){rctx.clearRect(0,0,rainCanvas.width,rainCanvas.height);rctx.strokeStyle='rgba(174,194,224,0.5)';rctx.lineWidth=1;rainDrops.forEach(d=>{rctx.beginPath();rctx.moveTo(d.x,d.y);rctx.lineTo(d.x,d.y+d.len);rctx.stroke();d.y+=d.speed;if(d.y>rainCanvas.height){d.y=-d.len;d.x=Math.random()*rainCanvas.width;}});requestAnimationFrame(drawRain);}drawRain();}
+        function startRain(){rainCanvas.style.display='block';for(let i=0;i<(isMobile?40:80);i++)rainDrops.push({x:Math.random()*rainCanvas.width,y:Math.random()*rainCanvas.height,len:Math.random()*15+10,speed:Math.random()*4+6});function drawRain(){rctx.clearRect(0,0,rainCanvas.width,rainCanvas.height);rctx.strokeStyle='rgba(174,194,224,0.5)';rctx.lineWidth=1;rainDrops.forEach(d=>{rctx.beginPath();rctx.moveTo(d.x,d.y);rctx.lineTo(d.x,d.y+d.len);rctx.stroke();d.y+=d.speed;if(d.y>rainCanvas.height){d.y=-d.len;d.x=Math.random()*rainCanvas.width;}});requestAnimationFrame(drawRain);}drawRain();}
         const pet=document.getElementById('pet');let petX=100,petY=100,mouseX=100,mouseY=100;
         document.addEventListener('mousemove',e=>{mouseX=e.clientX;mouseY=e.clientY;});
         (function petFollow(){petX+=(mouseX-petX)*0.03;petY+=(mouseY-petY)*0.03;pet.style.left=(petX+30)+'px';pet.style.top=(petY+30)+'px';requestAnimationFrame(petFollow);})();
         document.addEventListener('keydown',e=>{if(e.key==='k'||e.key==='K'){document.getElementById('easter-egg').style.display='block';setTimeout(()=>document.getElementById('easter-egg').style.display='none',3000);}});
         let lastTrail=0;
-        document.addEventListener('mousemove',e=>{const now=Date.now();if(now-lastTrail<50)return;lastTrail=now;const dot=document.createElement('div');dot.className='cursor-particle';dot.style.left=(e.clientX+(Math.random()-0.5)*10)+'px';dot.style.top=(e.clientY+(Math.random()-0.5)*10)+'px';document.body.appendChild(dot);setTimeout(()=>dot.remove(),800);});
+        if(!isMobile){
+            document.addEventListener('mousemove',e=>{const now=Date.now();if(now-lastTrail<50)return;lastTrail=now;const dot=document.createElement('div');dot.className='cursor-particle';dot.style.left=(e.clientX+(Math.random()-0.5)*10)+'px';dot.style.top=(e.clientY+(Math.random()-0.5)*10)+'px';document.body.appendChild(dot);setTimeout(()=>dot.remove(),800);});
+        }
         const quotes=[{text:"今天也要开心呀！",author:"— 小希"},{text:"生活就像辣条，辣并快乐着。",author:"— 小希"},{text:"玩游戏怎么了，我又没输。",author:"— 小希"},{text:"球球是全世界最可爱的狗！",author:"— 小希"},{text:"作业明天写也行。",author:"— 小希"},{text:"慢慢来，比较快。",author:"— 小希"},{text:"吃好喝好，长生不老。",author:"— 小希"},{text:"今天天气不错，适合出去玩。",author:"— 小希"}];
         const q=quotes[new Date().getDate()%quotes.length];
         document.getElementById('quoteText').textContent='"'+q.text+'"';
@@ -480,7 +513,7 @@
         updateCountdown();
         function toggleMenu(){document.getElementById('navLinks').classList.toggle('active');}
         document.querySelectorAll('.nav-links a').forEach(a=>a.addEventListener('click',()=>document.getElementById('navLinks').classList.remove('active')));
-        function copyLink(){navigator.clipboard.writeText(window.location.href).then(()=>alert('✅ 链接已复制！快去粘贴吧！'));}
+        function copyLink(){const url='https://laotou.is-a.dev/';if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(url).then(()=>alert('✅ 链接已复制！快去粘贴吧！')).catch(()=>{prompt('复制这个链接分享给朋友吧：',url);});}else{prompt('复制这个链接分享给朋友吧：',url);}}
         function shareTo(platform){copyLink();}
         let randomNumber=Math.floor(Math.random()*100)+1,guessCount=0;
         function checkGuess(){const input=document.getElementById('guessInput'),result=document.getElementById('guessResult');const guess=parseInt(input.value);result.style.display='block';if(!guess||guess<1||guess>100){result.className='guess-result guess-hint';result.textContent='⚠️ 请输入1到100之间的数字！';return;}guessCount++;if(guess===randomNumber){result.className='guess-result guess-correct';result.textContent='🎉 恭喜你！猜了 '+guessCount+' 次就猜对了！';randomNumber=Math.floor(Math.random()*100)+1;guessCount=0;input.value='';}else if(guess>randomNumber){result.className='guess-result guess-hint';result.textContent='📉 太大了！往小了猜～';}else{result.className='guess-result guess-hint';result.textContent='📈 太小了！往大了猜～';}input.value='';input.focus();}
@@ -488,7 +521,13 @@
         function startSnake(){snake=[{x:10,y:15},{x:9,y:15},{x:8,y:15}];sd={x:1,y:0};snakeScore=0;document.getElementById('snakeScore').textContent='0';placeFood();if(snakeLoop)clearInterval(snakeLoop);snakeLoop=setInterval(drawSnake,120);}
         function placeFood(){food={x:Math.floor(Math.random()*20),y:Math.floor(Math.random()*20)};}
         function drawSnake(){sctx.fillStyle='#0a0e17';sctx.fillRect(0,0,300,300);snake.forEach((s,i)=>{sctx.fillStyle=i===0?'#00d4ff':'#0099bb';sctx.fillRect(s.x*15+1,s.y*15+1,13,13);});sctx.fillStyle='#ff6b6b';sctx.fillRect(food.x*15+1,food.y*15+1,13,13);const head={x:snake[0].x+sd.x,y:snake[0].y+sd.y};if(head.x<0||head.x>19||head.y<0||head.y>19||snake.some(s=>s.x===head.x&&s.y===head.y)){clearInterval(snakeLoop);alert('💀 撞了！得分：'+snakeScore);return;}snake.unshift(head);if(head.x===food.x&&head.y===food.y){snakeScore++;document.getElementById('snakeScore').textContent=snakeScore;placeFood();}else snake.pop();}
+        function setDir(d){if(d==='up'&&sd.y!==1)sd={x:0,y:-1};else if(d==='down'&&sd.y!==-1)sd={x:0,y:1};else if(d==='left'&&sd.x!==1)sd={x:-1,y:0};else if(d==='right'&&sd.x!==-1)sd={x:1,y:0};}
         document.addEventListener('keydown',e=>{if(e.key==='ArrowUp'&&sd.y!==1)sd={x:0,y:-1};else if(e.key==='ArrowDown'&&sd.y!==-1)sd={x:0,y:1};else if(e.key==='ArrowLeft'&&sd.x!==1)sd={x:-1,y:0};else if(e.key==='ArrowRight'&&sd.x!==-1)sd={x:1,y:0};});
+        document.querySelectorAll('.pad-btn').forEach(btn=>{
+            const dir=btn.dataset.dir;
+            btn.addEventListener('click',()=>setDir(dir));
+            btn.addEventListener('touchstart',e=>{e.preventDefault();setDir(dir);},{passive:false});
+        });
         startSnake();
         function toggleDarkMode(){alert('深色模式：网站本身就是深色科技风啦！');}
         function updateTime(){const now=new Date();document.getElementById('currentTime').textContent=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');document.getElementById('currentDate').textContent=now.getFullYear()+'年'+(now.getMonth()+1)+'月'+now.getDate()+'日';}
@@ -507,9 +546,9 @@
         renderBlogs();
         function exportData(){const data={blogs:JSON.parse(localStorage.getItem('blogs')||'[]'),diaries:JSON.parse(localStorage.getItem('diaries')||'[]')};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='laotou-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();alert('💾 备份文件已下载，换设备时用"导入"恢复');}
         function importData(e){const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=function(ev){try{const data=JSON.parse(ev.target.result);if(data.blogs)localStorage.setItem('blogs',JSON.stringify(data.blogs));if(data.diaries)localStorage.setItem('diaries',JSON.stringify(data.diaries));renderBlogs();renderDiaries();alert('📂 导入成功！');}catch(err){alert('❌ 文件格式不对');}};reader.readAsText(file);}
-        function updateDashboard(){const pv=document.getElementById('busuanzi_value_site_pv');const uv=document.getElementById('busuanzi_value_site_uv');if(pv)document.getElementById('dashPV').textContent=pv.textContent||'...';if(uv)document.getElementById('dashUV').textContent=uv.textContent||'...';document.getElementById('dashDays').textContent=uptime;document.getElementById('dashOnline').textContent=Math.floor(Math.random()*4)+1;const total=parseInt(pv?.textContent||'0');document.getElementById('dashYou').textContent=total>0?(total-Math.floor(Math.random()*10)):'?';}
+        function updateDashboard(){const pv=document.getElementById('busuanzi_value_site_pv');const uv=document.getElementById('busuanzi_value_site_uv');if(pv)document.getElementById('dashPV').textContent=pv.textContent||'...';if(uv)document.getElementById('dashUV').textContent=uv.textContent||'...';document.getElementById('dashDays').textContent=uptime;const total=parseInt(pv?.textContent||'0');document.getElementById('dashYou').textContent=total>0?(total-Math.floor(Math.random()*10)):'?';}
         setTimeout(updateDashboard,2000);
-        const chatbotRules=[{keys:['你好','嗨','hi','hello','在吗'],reply:'你好呀！👋 今天过得怎么样？'},{keys:['你是谁','名字','介绍'],reply:'我是小希助手 🤖，住在这个小站里，有什么问题都可以问我！'},{keys:['网站','有什么','功能','玩什么'],reply:'这个小站有：🎮 猜数字、🐍 贪吃蛇、📔 日记、📝 博客、💬 留言板，还有一只跟着你跑的小狗！按 K 键有彩蛋哦～'},{keys:['球球','狗','宠物'],reply:'球球是小希的小狗！🐶 它会跟着你的鼠标在页面上跑来跑去，超可爱的～'},{keys:['几岁','年龄','多大'],reply:'小希是二年级小学生，所以...大概 8-9 岁吧！'},{keys:['小希','作者','站长'],reply:'小希是这个网站的主人，二年级学生，喜欢玩游戏、撸狗、吃辣条！'},{keys:['游戏','玩'],reply:'去游戏区玩猜数字和贪吃蛇吧！🎮 猜数字在"游戏"板块，按方向键控制贪吃蛇。'},{keys:['留言','评论','说话'],reply:'拉到最下面有留言板，用 GitHub 账号就能留言啦！💬'},{keys:['彩蛋','k','秘密'],reply:'按键盘上的 K 键试试！🎉 会有惊喜哦～'},{keys:['谢谢','感谢','thx'],reply:'不客气！😊 有问题随时找我～'},{keys:['天气','下雨','晴天'],reply:'看页面顶部的天气栏！☁️ 如果下雨的话，页面上还会飘雨滴呢～'},{keys:['音乐','听歌','播放'],reply:'去音乐板块听听国风热歌吧！🎵'}];
+        const chatbotRules=[{keys:['你好','嗨','hi','hello','在吗'],reply:'你好呀！👋 今天过得怎么样？'},{keys:['你是谁','名字','介绍'],reply:'我是小希助手 🤖，住在这个小站里，有什么问题都可以问我！'},{keys:['网站','有什么','功能','玩什么'],reply:'这个小站有：🎮 猜数字、🐍 贪吃蛇、📔 日记、📝 博客、💬 留言板，还有一只跟着你跑的小狗！按 K 键有彩蛋哦～'},{keys:['球球','狗','宠物'],reply:'球球是小希的小狗！🐶 它会跟着你的鼠标在页面上跑来跑去，超可爱的～'},{keys:['几岁','年龄','多大'],reply:'小希是二年级小学生，所以...大概 8-9 岁吧！'},{keys:['小希','作者','站长'],reply:'小希是这个网站的主人，二年级学生，喜欢玩游戏、撸狗、吃辣条！'},{keys:['游戏','玩','贪吃蛇'],reply:'去游戏区玩猜数字和贪吃蛇吧！🎮 电脑用方向键，手机点方向按钮就能玩～'},{keys:['留言','评论','说话'],reply:'拉到最下面有留言板，用 GitHub 账号就能留言啦！💬'},{keys:['彩蛋','k','秘密'],reply:'按键盘上的 K 键试试！🎉 会有惊喜哦～'},{keys:['谢谢','感谢','thx'],reply:'不客气！😊 有问题随时找我～'},{keys:['天气','下雨','晴天'],reply:'看页面顶部的天气栏！☁️ 如果下雨的话，页面上还会飘雨滴呢～'},{keys:['音乐','听歌','播放'],reply:'去音乐板块听听国风热歌吧！🎵 直接点歌就能播～'}];
         function getBotReply(msg){msg=msg.toLowerCase();for(const rule of chatbotRules){if(rule.keys.some(k=>msg.includes(k.toLowerCase())))return rule.reply;}return '嗯嗯～这个我还不太懂 😅 你可以问我：你是谁？网站有什么？球球是谁？或者按 K 键找彩蛋！';}
         function sendChat(){const input=document.getElementById('chatInput');const text=input.value.trim();if(!text)return;const box=document.getElementById('chatBox');box.innerHTML+='<div style="margin-bottom:10px;text-align:right;"><div style="display:inline-block;background:rgba(0,212,255,0.3);color:#fff;padding:8px 12px;border-radius:10px 10px 0 10px;font-size:14px;">'+text.replace(/</g,'&lt;')+'</div></div>';input.value='';box.scrollTop=box.scrollHeight;setTimeout(()=>{box.innerHTML+='<div style="margin-bottom:10px;"><div style="display:inline-block;background:rgba(0,212,255,0.15);color:#00d4ff;padding:8px 12px;border-radius:10px 10px 10px 0;font-size:14px;">🤖 '+getBotReply(text)+'</div></div>';box.scrollTop=box.scrollHeight;},600);}
         function quickAsk(q){document.getElementById('chatInput').value=q;sendChat();}
