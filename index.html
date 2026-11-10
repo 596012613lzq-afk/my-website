@@ -139,6 +139,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",s
 .mobile-nav a:hover{color:#00d4ff}
 @media(max-width:768px){.grid{grid-template-columns:1fr}.link-list{grid-template-columns:repeat(2,1fr)}.photo-wall{grid-template-columns:repeat(3,1fr)}.hero h1{font-size:28px}.hero{padding:35px 20px}.btn{padding:14px 24px}#music iframe{height:540px}.game-container{padding:18px}.mobile-nav{display:flex}body{padding-bottom:60px}.footer{padding-bottom:20px}}
 @media(max-width:600px){.menu-toggle{display:block}.nav-links{display:none;position:absolute;top:60px;left:0;right:0;background:rgba(15,20,35,.98);flex-direction:column;padding:15px 20px;gap:12px}.nav-links.active{display:flex}.visitor-info{display:none}}
+.light-mode{background:#f5f7fa!important;color:#333!important}
+.light-mode .navbar{background:rgba(255,255,255,.9)}
+.light-mode .card,.light-mode .game-container{background:rgba(255,255,255,.9);border-color:rgba(0,150,200,.15);color:#333}
+.light-mode .info-item,.light-mode .quote-bar{background:rgba(0,150,200,.06);color:#666}
+.light-mode .nav-links a{color:#666}
+.light-mode .hero{background:linear-gradient(135deg,#e0f0ff,#d0e8ff 50%,#c0e0ff);color:#333}
+.light-mode #typewriter{color:rgba(0,0,0,.6)}
+.light-mode .diary-input,.light-mode #blogTitle,.light-mode #blogContent,.light-mode #blogCategory,.light-mode #todoInput,.light-mode .guess-input,.light-mode #chatInput{background:rgba(255,255,255,.8);color:#333;border-color:rgba(0,150,200,.2)}
+.clock-big{font-size:48px;font-weight:700;color:#00d4ff;text-shadow:0 0 30px rgba(0,212,255,.5);margin:15px 0;letter-spacing:3px}
+.light-mode .clock-big{color:#0096c8;text-shadow:none}
+.clock-date{font-size:16px;color:rgba(255,255,255,.7);margin-bottom:10px}
+.light-mode .clock-date{color:#666}
 </style>
 </head>
 <body>
@@ -162,6 +174,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",s
 <section class="hero" id="home">
 <img src="avatar.jpg" alt="头像" style="width:100px;height:100px;border-radius:50%;object-fit:cover;margin-bottom:15px;border:3px solid rgba(255,255,255,.2)">
 <h1>欢迎来到我的个人网站</h1>
+<div class="clock-date" id="clockDate">----年--月--日 星期-</div>
+<div class="clock-big" id="clockBig">--:--:--</div>
 <div id="typewriter"></div><br>
 <a href="#links" class="hero-btn">开始探索</a>
 </section>
@@ -311,7 +325,8 @@ function setDir(d){if(d==='up'&&sd.y!==1)sd={x:0,y:-1};else if(d==='down'&&sd.y!
 document.addEventListener('keydown',e=>{if(e.key==='ArrowUp'&&sd.y!==1)sd={x:0,y:-1};else if(e.key==='ArrowDown'&&sd.y!==-1)sd={x:0,y:1};else if(e.key==='ArrowLeft'&&sd.x!==1)sd={x:-1,y:0};else if(e.key==='ArrowRight'&&sd.x!==-1)sd={x:1,y:0};});
 document.querySelectorAll('.pad-btn').forEach(btn=>{const dir=btn.dataset.dir;btn.addEventListener('click',()=>setDir(dir));btn.addEventListener('touchstart',e=>{e.preventDefault();setDir(dir);},{passive:false});});
 startSnake();
-function toggleDarkMode(){alert('深色模式：网站本身就是深色科技风啦！');}
+function toggleDarkMode(){document.body.classList.toggle('light-mode');const isLight=document.body.classList.contains('light-mode');localStorage.setItem('lightMode',isLight?'1':'0');document.getElementById('darkModeBtn').textContent=isLight?'☀️':'🌙';}
+if(localStorage.getItem('lightMode')==='1'){document.body.classList.add('light-mode');document.getElementById('darkModeBtn').textContent='☀️';}
 const nowDefaults=[{e:'🎮',t:'最近在玩：迷你世界'},{e:'🎵',t:'最近在听：轻音乐'},{e:'🐶',t:'今天在：撸球球'}];
 function renderNow(){let saved=null;try{saved=JSON.parse(localStorage.getItem('nowCards')||'null');}catch(e){saved=null;}const list=(saved&&saved.length?saved:nowDefaults);document.getElementById('nowList').innerHTML=list.map((x,i)=>'<div class="now-row" onclick="editNow('+i+')"><span class="emoji">'+x.e+'</span><span>'+x.t+'</span></div>').join('');}
 function editNow(i){let saved=null;try{saved=JSON.parse(localStorage.getItem('nowCards')||'null');}catch(e){saved=null;}const list=(saved&&saved.length?saved:nowDefaults.slice());const v=prompt('改一下这条（前面放一个表情，空格后写内容）：',list[i].e+' '+list[i].t);if(v===null)return;const parts=v.trim().split(/\s+/);list[i]={e:parts[0]||list[i].e,t:parts.slice(1).join(' ')||list[i].t};localStorage.setItem('nowCards',JSON.stringify(list));renderNow();}
@@ -323,7 +338,7 @@ let deferredPrompt=null;
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;document.getElementById('installBtn').style.display='flex';});
 window.addEventListener('appinstalled',()=>{document.getElementById('installBtn').style.display='none';});
 function doInstall(){if(deferredPrompt){deferredPrompt.prompt();deferredPrompt.userChoice.then(()=>{deferredPrompt=null;document.getElementById('installBtn').style.display='none';});}else{alert('装到桌面这样做 👇\n\n1. 用【电脑版 Chrome 或 Edge】打开 https://laotou.is-a.dev\n2. 点右上角三个点 ⋮ 菜单\n3. 找到「安装老头的小站…」或「应用 → 安装此网站」\n4. 点安装，桌面就有图标了\n\n手机：用 Chrome 打开，点 ⋮ → 添加到主屏幕');}}
-function updateTime(){const now=new Date();document.getElementById('currentTime').textContent=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');document.getElementById('currentDate').textContent=now.getFullYear()+'年'+(now.getMonth()+1)+'月'+now.getDate()+'日';}
+function updateTime(){const now=new Date();document.getElementById('currentTime').textContent=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');document.getElementById('currentDate').textContent=now.getFullYear()+'年'+(now.getMonth()+1)+'月'+now.getDate()+'日';const h=String(now.getHours()).padStart(2,'0'),m=String(now.getMinutes()).padStart(2,'0'),s=String(now.getSeconds()).padStart(2,'0');document.getElementById('clockBig').textContent=h+':'+m+':'+s;const weeks=['日','一','二','三','四','五','六'];document.getElementById('clockDate').textContent=now.getFullYear()+'年'+(now.getMonth()+1)+'月'+now.getDate()+'日 星期'+weeks[now.getDay()];}
 updateTime();setInterval(updateTime,1000);
 async function loadWeather(){const el=document.getElementById('weather');try{const pos=await new Promise((res,rej)=>navigator.geolocation.getCurrentPosition(res,rej,{timeout:8000}));const r=await fetch('https://api.open-meteo.com/v1/forecast?latitude='+pos.coords.latitude+'&longitude='+pos.coords.longitude+'&current=temperature_2m,weather_code&timezone=auto');const d=await r.json();const code=d.current.weather_code;let t='晴',i='☀️';if(code===0){t='晴';i='☀️';}else if(code<=3){t='多云';i='⛅';}else if(code<=60){t='小雨';i='🌧️';startRain();}else if(code<=80){t='大雨';i='🌧️';startRain();}else{t='阴';i='☁️';}el.textContent='附近 '+i+' '+t+' '+Math.round(d.current.temperature_2m)+'°C';}catch(e){try{const r=await fetch('https://api.open-meteo.com/v1/forecast?latitude=34.62&longitude=112.45&current=temperature_2m,weather_code&timezone=Asia/Shanghai');const d=await r.json();el.textContent='洛阳 ☀️ 晴 '+Math.round(d.current.temperature_2m)+'°C';}catch(e2){el.textContent='天气获取失败';}}}
 loadWeather();
