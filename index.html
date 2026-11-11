@@ -53,11 +53,37 @@ textarea{min-height:80px}
 .todo-text{flex:1;font-size:14px;color:#374151}
 .todo-done .todo-text{text-decoration:line-through;color:#9ca3af}
 .todo-del{background:none;border:none;color:#ef4444;cursor:pointer;font-size:14px}
-.fab{position:fixed;width:44px;height:44px;border-radius:50%;border:none;font-size:18px;cursor:pointer;z-index:1000;box-shadow:0 2px 10px rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center}
+.fab{position:fixed;width:48px;height:48px;border-radius:50%;border:none;font-size:20px;cursor:pointer;z-index:1000;box-shadow:0 2px 10px rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center;transition:transform .2s}
+.fab:hover{transform:scale(1.08)}
 .dark-toggle{bottom:20px;left:20px;background:#fff;color:#333;border:1px solid #e5e7eb}
-.back-top{bottom:20px;right:20px;background:#fff;color:#333;border:1px solid #e5e7eb;display:none}
+.back-top{bottom:20px;right:80px;background:#fff;color:#333;border:1px solid #e5e7eb;display:none}
+.chat-btn{bottom:20px;right:20px;background:#2563eb;color:#fff;border:none;font-size:22px}
 .reveal{opacity:0;transform:translateY(20px);transition:opacity .5s,transform .5s}
 .reveal.visible{opacity:1;transform:translateY(0)}
+.chat-panel{position:fixed;bottom:80px;right:20px;width:340px;max-width:calc(100vw - 40px);height:480px;max-height:calc(100vh - 120px);background:#fff;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.15);z-index:1001;display:none;flex-direction:column;overflow:hidden}
+.chat-panel.open{display:flex}
+.chat-header{background:#2563eb;color:#fff;padding:14px 18px;display:flex;justify-content:space-between;align-items:center}
+.chat-header .title{font-size:15px;font-weight:600}
+.chat-header .close{background:none;border:none;color:#fff;font-size:20px;cursor:pointer;line-height:1}
+.chat-body{flex:1;overflow-y:auto;padding:16px;background:#f9fafb}
+.chat-msg{margin-bottom:12px;display:flex;gap:8px}
+.chat-msg .avatar{width:32px;height:32px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px}
+.chat-msg.bot .avatar{background:#eff6ff}
+.chat-msg.user{flex-direction:row-reverse}
+.chat-msg.user .avatar{background:#fef3c7}
+.chat-bubble{max-width:75%;padding:10px 14px;border-radius:12px;font-size:13px;line-height:1.6}
+.chat-msg.bot .chat-bubble{background:#fff;border:1px solid #e5e7eb;color:#374151}
+.chat-msg.user .chat-bubble{background:#2563eb;color:#fff}
+.chat-typing{display:inline-flex;gap:4px;padding:4px 0}
+.chat-typing span{width:6px;height:6px;border-radius:50%;background:#9ca3af;animation:blink 1.4s infinite}
+.chat-typing span:nth-child(2){animation-delay:.2s}
+.chat-typing span:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:.3}40%{opacity:1}}
+.chat-input-row{display:flex;gap:8px;padding:12px;background:#fff;border-top:1px solid #e5e7eb}
+.chat-input-row input{flex:1;border:1px solid #d1d5db;border-radius:20px;padding:8px 14px;font-size:13px;margin-bottom:0;outline:none}
+.chat-input-row button{background:#2563eb;color:#fff;border:none;border-radius:50%;width:36px;height:36px;font-size:16px;cursor:pointer;flex-shrink:0}
+.quick-questions{padding:0 16px 8px;background:#f9fafb;display:flex;flex-wrap:wrap;gap:6px}
+.quick-q{font-size:12px;padding:5px 10px;background:#eff6ff;color:#2563eb;border-radius:12px;cursor:pointer;border:none}
 body.dark{background:#111827;color:#d1d5db}
 body.dark .navbar{background:rgba(31,41,55,.9);border-color:#374151}
 body.dark .logo{color:#60a5fa}
@@ -84,6 +110,13 @@ body.dark .todo-row{border-color:#374151}
 body.dark .todo-text{color:#d1d5db}
 body.dark .dark-toggle{background:#374151;color:#d1d5db;border-color:#4b5563}
 body.dark .back-top{background:#374151;color:#d1d5db;border-color:#4b5563}
+body.dark .chat-panel{background:#1f2937;border-color:#374151}
+body.dark .chat-body{background:#111827}
+body.dark .chat-msg.bot .chat-bubble{background:#374151;border-color:#4b5563;color:#d1d5db}
+body.dark .chat-input-row{background:#1f2937;border-color:#374151}
+body.dark .chat-input-row input{background:#374151;border-color:#4b5563;color:#d1d5db}
+body.dark .quick-questions{background:#111827}
+body.dark .quick-q{background:#1e3a5f;color:#60a5fa}
 .footer{text-align:center;padding:30px 20px;color:#9ca3af;font-size:13px}
 @media(max-width:600px){
 .nav-links{display:none}
@@ -92,6 +125,7 @@ body.dark .back-top{background:#374151;color:#d1d5db;border-color:#4b5563}
 .hero{padding:40px 16px 30px}
 .clock-big{font-size:28px}
 .main{padding:20px 16px}
+.chat-panel{right:10px;left:10px;width:auto;bottom:80px}
 }
 </style>
 </head>
@@ -198,6 +232,30 @@ body.dark .back-top{background:#374151;color:#d1d5db;border-color:#4b5563}
 
 <button class="fab dark-toggle" onclick="toggleDark()" id="darkBtn">🌙</button>
 <button class="fab back-top" onclick="scrollToTop()" id="backTop">↑</button>
+<button class="fab chat-btn" onclick="toggleChat()" id="chatBtn">💬</button>
+
+<div class="chat-panel" id="chatPanel">
+<div class="chat-header">
+<span class="title">🤖 小希AI助手</span>
+<button class="close" onclick="toggleChat()">×</button>
+</div>
+<div class="quick-questions" id="quickQuestions">
+<button class="quick-q" onclick="askQuick('你是谁？')">你是谁？</button>
+<button class="quick-q" onclick="askQuick('你喜欢什么？')">喜欢什么？</button>
+<button class="quick-q" onclick="askQuick('今天天气怎么样？')">天气</button>
+<button class="quick-q" onclick="askQuick('写一首诗')">写诗</button>
+</div>
+<div class="chat-body" id="chatBody">
+<div class="chat-msg bot">
+<div class="avatar">🤖</div>
+<div class="chat-bubble">你好呀！我是小希的AI助手，有什么可以帮你的吗？😊</div>
+</div>
+</div>
+<div class="chat-input-row">
+<input type="text" id="chatInput" placeholder="说点什么..." onkeydown="if(event.key==='Enter')sendChat()">
+<button onclick="sendChat()">➤</button>
+</div>
+</div>
 
 <script>
 function updateTime(){
@@ -285,6 +343,110 @@ obs.unobserve(en.target);
 },{threshold:.08});
 document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
 })();
+
+// 聊天机器人
+function toggleChat(){
+const p=document.getElementById('chatPanel');
+p.classList.toggle('open');
+if(p.classList.contains('open')){
+document.getElementById('chatInput').focus();
+}
+}
+function askQuick(q){
+document.getElementById('chatInput').value=q;
+sendChat();
+}
+function addMsg(text,who){
+const body=document.getElementById('chatBody');
+const div=document.createElement('div');
+div.className='chat-msg '+who;
+if(who==='bot'){
+div.innerHTML='<div class="avatar">🤖</div><div class="chat-bubble"></div>';
+} else {
+div.innerHTML='<div class="avatar">😊</div><div class="chat-bubble"></div>';
+}
+div.querySelector('.chat-bubble').textContent=text;
+body.appendChild(div);
+body.scrollTop=body.scrollHeight;
+return div.querySelector('.chat-bubble');
+}
+function showTyping(){
+const body=document.getElementById('chatBody');
+const div=document.createElement('div');
+div.className='chat-msg bot';
+div.id='typingMsg';
+div.innerHTML='<div class="avatar">🤖</div><div class="chat-bubble"><div class="chat-typing"><span></span><span></span><span></span></div></div>';
+body.appendChild(div);
+body.scrollTop=body.scrollHeight;
+}
+function hideTyping(){
+const t=document.getElementById('typingMsg');
+if(t)t.remove();
+}
+function typeText(el,text,speed){
+speed=speed||30;
+el.textContent='';
+let i=0;
+const timer=setInterval(()=>{
+el.textContent=text.slice(0,++i);
+if(i>=text.length)clearInterval(timer);
+document.getElementById('chatBody').scrollTop=document.getElementById('chatBody').scrollHeight;
+},speed);
+}
+
+const replies=[
+{keys:['你好','hi','hello','在吗','嗨'],reply:'你好呀！很高兴见到你～ 有什么想聊的吗？😊'},
+{keys:['你是谁','介绍','名字'],reply:'我是小希的AI助手！小希是个二年级的小朋友，喜欢玩游戏、看书、踢足球，还有一只叫球球的小狗～'},
+{keys:['喜欢','爱好','兴趣'],reply:'小希喜欢玩游戏、看书、踢足球，最爱陪着小狗球球玩！你呢？'},
+{keys:['天气'],reply:'首页有时天气小部件哦！可以看看今天的天气～ ☀️⛅🌧️'},
+{keys:['诗','写诗','作一首'],reply:'《小站》\n小小一个站，\n装满喜和乐。\n天天写日记，\n成长真快乐！'},
+{keys:['几岁','年龄','多大'],reply:'小希上二年级啦，你猜几岁？😉'},
+{keys:['小狗','球球','宠物'],reply:'球球是小希最喜欢的小狗！每天都要陪它玩～ 🐶'},
+{keys:['游戏','玩什么'],reply:'小希最近在玩迷你世界！你呢，喜欢玩什么游戏？🎮'},
+{keys:['音乐','歌','听歌'],reply:'网站里有国风热歌榜播放器，往下滑就能听到啦～ 🎵'},
+{keys:['博客','日记','文章'],reply:'往下滑有博客和日记功能，可以写东西记录生活哦！📝'},
+{keys:['待办','任务','计划'],reply:'待办清单可以帮你记住要做的事情，像写作业、练琴、踢球什么的～ ✅'},
+{keys:['再见','拜拜','走了'],reply:'再见！有空再来玩呀～ 👋'},
+{keys:['谢谢','感谢'],reply:'不客气！能帮到你我很开心～ 😊'},
+{keys:['网站','小站'],reply:'这是小希的个人网站，用GitHub Pages做的，是不是很厉害？🏠'},
+{keys:['深色','晚上','黑色'],reply:'左下角有个月亮按钮，点一下就变成深色模式啦！🌙'},
+{keys:['时间','几点','现在'],reply:'首页有大大的时钟，可以看到现在几点了～ ⏰'},
+{keys:['访客','人数','多少人'],reply:'首页有显示访问人数哦！你是今天的访客之一～ 👀'},
+{keys:['留言','评论','说话'],reply:'最下面有留言板，用GitHub账号就能留言啦！💬'}
+];
+
+function getReply(input){
+input=input.toLowerCase().trim();
+for(const r of replies){
+for(const k of r.keys){
+if(input.includes(k.toLowerCase())){
+return r.reply;
+}
+}
+}
+const fallbacks=[
+'这个问题有点难住我了，不过我在努力学习中！💪',
+'哈哈，我还不太懂这个，你可以问我关于小希的事情哦～',
+'有意思！再多跟我说说？😊',
+'我是小希的小助手，你可以问我天气、时间、或者小希喜欢什么～'
+];
+return fallbacks[Math.floor(Math.random()*fallbacks.length)];
+}
+
+function sendChat(){
+const inp=document.getElementById('chatInput');
+const text=inp.value.trim();
+if(!text)return;
+inp.value='';
+addMsg(text,'user');
+showTyping();
+setTimeout(()=>{
+hideTyping();
+const reply=getReply(text);
+const bubble=addMsg('','bot');
+typeText(bubble,reply,25);
+},600+Math.random()*600);
+}
 
 function saveBlog(){
 const title=document.getElementById('blogTitle').value.trim();
