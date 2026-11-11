@@ -6,6 +6,7 @@
 <title>小希的个人网站</title>
 <meta name="description" content="小希的个人网站：记录生活、学习和爱好。">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏠</text></svg>">
+<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
@@ -92,6 +93,7 @@ body.dark .back-top{background:#374151;color:#d1d5db;border-color:#4b5563}
 <a href="#blog">博客</a>
 <a href="#diary">日记</a>
 <a href="#todo">待办</a>
+<a href="#music">音乐</a>
 <a href="#message">留言</a>
 </div>
 </div>
@@ -104,6 +106,9 @@ body.dark .back-top{background:#374151;color:#d1d5db;border-color:#4b5563}
 <p class="subtitle">二年级学生 · 记录学习与生活</p>
 <div class="clock-date" id="clockDate">----年--月--日 星期-</div>
 <div class="clock-big" id="clockBig">--:--:--</div>
+<p style="font-size:13px;color:#9ca3af;margin-top:10px">
+👀 本站已被访问 <span id="busuanzi_value_site_pv" style="color:#2563eb;font-weight:600">0</span> 次 · 你是第 <span id="busuanzi_value_site_uv" style="color:#2563eb;font-weight:600">0</span> 位访客 · 已运行 <span id="uptimeDays" style="color:#2563eb;font-weight:600">0</span> 天
+</p>
 </section>
 
 <div class="card" id="about">
@@ -153,6 +158,12 @@ body.dark .back-top{background:#374151;color:#d1d5db;border-color:#4b5563}
 </div>
 </div>
 
+<div class="card" id="music">
+<h2>🎵 音乐</h2>
+<p style="font-size:13px;color:#6b7280;margin-bottom:12px">国风热歌榜 · 点击播放～</p>
+<iframe src="https://music.163.com/outchain/player?type=0&id=13103739035&auto=0&height=320" frameborder="0" allow="autoplay" style="width:100%;height:320px;border:0;border-radius:8px;overflow:hidden"></iframe>
+</div>
+
 <div class="card" id="message">
 <h2>💬 留言板</h2>
 <p style="font-size:13px;color:#6b7280;margin-bottom:12px">欢迎给我留言！</p>
@@ -176,6 +187,11 @@ const weeks=['日','一','二','三','四','五','六'];
 document.getElementById('clockDate').textContent=now.getFullYear()+'年'+(now.getMonth()+1)+'月'+now.getDate()+'日 星期'+weeks[now.getDay()];
 }
 updateTime();setInterval(updateTime,1000);
+
+// 建站天数
+const siteStart=new Date('2026-11-05');
+const uptime=Math.floor((Date.now()-siteStart.getTime())/86400000);
+document.getElementById('uptimeDays').textContent=uptime;
 
 function toggleDark(){
 document.body.classList.toggle('dark');
