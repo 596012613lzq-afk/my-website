@@ -217,6 +217,7 @@ body{
       <a href="#music">音乐</a>
       <a href="#tools">工具箱</a>
       <a href="#links">收藏</a>
+      <a href="#iplookup">IP查询</a>
       <a href="#blog">博客</a>
       <a href="#diary">日记</a>
       <a href="#message">留言</a>
@@ -383,6 +384,7 @@ body{
     <div class="link-list">
       <a href="https://github.com/lizongying/my-tv/releases" target="_blank" rel="noopener" class="link-item"><span>📺</span>我的电视 my-tv <b style="color:var(--accent)">3.2万⭐</b></a>
       <a href="https://github.com/iptv-org/iptv" target="_blank" rel="noopener" class="link-item"><span>📡</span>免费直播源 iptv-org <b style="color:var(--accent)">14万⭐</b></a>
+      <a href="https://github.com/lionsoul2014/ip2region" target="_blank" rel="noopener" class="link-item"><span>📍</span>IP 归属地 ip2region <b style="color:var(--accent)">1.8万⭐</b></a>
       <a href="https://www.capcut.cn/" target="_blank" rel="noopener" class="link-item"><span>✂️</span>CapCut 网页剪辑</a>
       <a href="https://www.photopea.com" target="_blank" rel="noopener" class="link-item"><span>🖼️</span>在线修图 Photopea</a>
       <a href="https://excalidraw.com" target="_blank" rel="noopener" class="link-item"><span>✏️</span>在线画图 Excalidraw</a>
@@ -395,6 +397,19 @@ body{
       <a href="https://github.com/harry0703/MoneyPrinterTurbo" target="_blank" rel="noopener" class="link-item"><span>🎬</span>一键做视频</a>
     </div>
     <p class="hint" style="margin-top:16px;margin-bottom:0">这些全是网页，谁打开都能用，不用先装东西。</p>
+  </section>
+
+  <!-- ===== IP 归属地查询 ===== -->
+  <section class="section" id="iplookup">
+    <h2>📍 IP 归属地查询</h2>
+    <p class="hint">输入一个 IP，或者直接点「查我自己」，看你这条网络在哪个国家、哪个省市、哪家运营商。在线查，朋友点开也能用。</p>
+    <div class="row">
+      <input type="text" class="input" id="ipInput" placeholder="比如 8.8.8.8，留空就查我自己" style="flex:1;min-width:200px">
+      <button class="btn" onclick="lookupIP()">查询</button>
+      <button class="btn" style="background:var(--bg-soft);color:var(--text);border:1px solid var(--border)" onclick="lookupIP('me')">查我自己</button>
+    </div>
+    <div id="ipResult" style="display:none;margin-top:14px;padding:14px;border-radius:9px;background:var(--bg-soft);font-size:14px;line-height:1.9"></div>
+    <p class="hint" style="margin-top:14px;margin-bottom:0">想要不联网也能查的离线版（装在本机）：<a href="https://github.com/lionsoul2014/ip2region" target="_blank" rel="noopener" style="color:var(--accent)">ip2region 开源地址 ↗</a></p>
   </section>
 
   <!-- ===== 博客 ===== -->
@@ -691,6 +706,39 @@ function safeCalc(expr){
   const v=Function('"use strict";return ('+t+')')();
   if(!isFinite(v)) throw new Error('bad');
   return Math.round(v*1e10)/1e10;
+}
+
+/* ===== IP 归属地查询（在线，谁都能用） ===== */
+async function lookupIP(mode){
+  const box=$('ipResult');
+  let target=$('ipInput').value.trim();
+  if(mode==='me') target='';
+  box.style.display='block';
+  box.textContent='查询中…';
+  const urls = target
+    ? ['https://ipapi.co/'+encodeURIComponent(target)+'/json/','https://ipwho.is/'+encodeURIComponent(target)]
+    : ['https://ipapi.co/json/','https://ipwho.is/'];
+  for(let i=0;i<urls.length;i++){
+    try{
+      const r=await fetchTimeout(urls[i],8000);
+      if(!r.ok) continue;
+      const d=await r.json();
+      if(!d || d.error===true || d.success===false) continue;
+      const conn=d.connection||{};
+      const lines=[];
+      lines.push('🖥️ IP：'+(d.ip||target||'本机'));
+      const country=d.country_name||d.country;
+      if(country) lines.push('🌍 国家/地区：'+country);
+      if(d.region) lines.push('🗺️ 省/州：'+d.region);
+      if(d.city) lines.push('🏙️ 城市：'+d.city);
+      const isp=d.org||conn.isp||conn.org;
+      if(isp) lines.push('📶 运营商：'+isp);
+      if(d.timezone) lines.push('🕐 时区：'+(typeof d.timezone==='string'?d.timezone:(d.timezone.id||'')));
+      box.innerHTML=lines.map(function(s){return esc(s)}).join('<br>');
+      return;
+    }catch(e){}
+  }
+  box.textContent='查询失败：接口可能被限流了，过会儿再试，或换个 IP。';
 }
 
 /* ===== 博客 ===== */
