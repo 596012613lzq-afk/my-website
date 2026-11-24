@@ -383,7 +383,7 @@ body{
     <p class="hint">朋友点开就能用：能在线干活的给网页版，必须安装的给官方下载页。</p>
     <div class="link-list">
       <a href="https://github.com/lizongying/my-tv/releases" target="_blank" rel="noopener" class="link-item"><span>📺</span>我的电视 my-tv <b style="color:var(--accent)">3.2万⭐</b></a>
-      <a href="https://github.com/iptv-org/iptv" target="_blank" rel="noopener" class="link-item"><span>📡</span>免费直播源 iptv-org <b style="color:var(--accent)">14万⭐</b></a>
+      <a href="https://github.com/iptv-org/iptv" target="_blank" rel="noopener" class="link-item"><span>📡</span>免费直播源 iptv-org <b style="color:var(--accent)">14.5万⭐</b></a>
       <a href="https://github.com/lionsoul2014/ip2region" target="_blank" rel="noopener" class="link-item"><span>📍</span>IP 归属地 ip2region <b style="color:var(--accent)">1.8万⭐</b></a>
       <a href="https://www.capcut.cn/" target="_blank" rel="noopener" class="link-item"><span>✂️</span>CapCut 网页剪辑</a>
       <a href="https://www.photopea.com" target="_blank" rel="noopener" class="link-item"><span>🖼️</span>在线修图 Photopea</a>
@@ -716,11 +716,11 @@ async function lookupIP(mode){
   box.style.display='block';
   box.textContent='查询中…';
   const urls = target
-    ? ['https://ipapi.co/'+encodeURIComponent(target)+'/json/','https://ipwho.is/'+encodeURIComponent(target)]
-    : ['https://ipapi.co/json/','https://ipwho.is/'];
+    ? ['https://ipwho.is/'+encodeURIComponent(target),'https://ipapi.co/'+encodeURIComponent(target)+'/json/']
+    : ['https://ipwho.is/','https://ipapi.co/json/'];
   for(let i=0;i<urls.length;i++){
     try{
-      const r=await fetchTimeout(urls[i],8000);
+      const r=await fetchTimeout(urls[i],6000);
       if(!r.ok) continue;
       const d=await r.json();
       if(!d || d.error===true || d.success===false) continue;
@@ -733,12 +733,14 @@ async function lookupIP(mode){
       if(d.city) lines.push('🏙️ 城市：'+d.city);
       const isp=d.org||conn.isp||conn.org;
       if(isp) lines.push('📶 运营商：'+isp);
-      if(d.timezone) lines.push('🕐 时区：'+(typeof d.timezone==='string'?d.timezone:(d.timezone.id||'')));
+      if(d.asn||conn.asn) lines.push('🔢 ASN：'+(d.asn||conn.asn));
+      const tz=(typeof d.timezone==='string')?d.timezone:(d.timezone&&d.timezone.id);
+      if(tz) lines.push('🕐 时区：'+tz);
       box.innerHTML=lines.map(function(s){return esc(s)}).join('<br>');
       return;
     }catch(e){}
   }
-  box.textContent='查询失败：接口可能被限流了，过会儿再试，或换个 IP。';
+  box.textContent='查询失败：接口可能被限流了，过会儿再试，或者换个 IP。';
 }
 
 /* ===== 博客 ===== */
