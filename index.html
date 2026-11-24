@@ -353,7 +353,7 @@ body{
             <button class="btn" onclick="calcPress('3')">3</button>
             <button class="btn" onclick="calcPress('+')">+</button>
             <button class="btn" style="grid-column:span 2" onclick="calcPress('0')">0</button>
-            <button class="btn" onclick="calcPress('.')">.</button>
+            <button class="btn" onclick="calcPress('. ')">.</button>
             <button class="btn" onclick="calcPress('=')">=</button>
           </div>
         </div>
@@ -402,11 +402,15 @@ body{
   <!-- ===== IP 归属地查询 ===== -->
   <section class="section" id="iplookup">
     <h2>📍 IP 归属地查询</h2>
-    <p class="hint">输入一个 IP，或者直接点「查我自己」，看你这条网络在哪个国家、哪个省市、哪家运营商。在线查，朋友点开也能用。</p>
+    <p class="hint">输入一个 IP（IPv4 / IPv6 都行），或者直接点下面的按钮查你自己的地址。现在多数宽带是 IPv4+IPv6 双栈，所以默认会先走 IPv6。</p>
     <div class="row">
-      <input type="text" class="input" id="ipInput" placeholder="比如 8.8.8.8，留空就查我自己" style="flex:1;min-width:200px">
-      <button class="btn" onclick="lookupIP()">查询</button>
-      <button class="btn" style="background:var(--bg-soft);color:var(--text);border:1px solid var(--border)" onclick="lookupIP('me')">查我自己</button>
+      <input type="text" class="input" id="ipInput" placeholder="比如 8.8.8.8 或 2409:8a47:..." style="flex:1;min-width:200px">
+      <button class="btn" onclick="showIP()">查询</button>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <button class="btn" style="background:var(--bg-soft);color:var(--text);border:1px solid var(--border)" onclick="lookupSelf('v4')">查我的 IPv4</button>
+      <button class="btn" style="background:var(--bg-soft);color:var(--text);border:1px solid var(--border)" onclick="lookupSelf('v6')">查我的 IPv6</button>
+      <button class="btn" style="background:var(--bg-soft);color:var(--text);border:1px solid var(--border)" onclick="lookupSelf('auto')">本次连接（自动）</button>
     </div>
     <div id="ipResult" style="display:none;margin-top:14px;padding:14px;border-radius:9px;background:var(--bg-soft);font-size:14px;line-height:1.9"></div>
     <p class="hint" style="margin-top:14px;margin-bottom:0">想要不联网也能查的离线版（装在本机）：<a href="https://github.com/lionsoul2014/ip2region" target="_blank" rel="noopener" style="color:var(--accent)">ip2region 开源地址 ↗</a></p>
@@ -708,11 +712,32 @@ function safeCalc(expr){
   return Math.round(v*1e10)/1e10;
 }
 
-/* ===== IP 归属地查询（在线，谁都能用） ===== */
-async function lookupIP(mode){
+/* ===== IP 归属地查询（在线，谁都能用，支持 IPv4 / IPv6） ===== */
+async function lookupSelf(family){
   const box=$('ipResult');
-  let target=$('ipInput').value.trim();
-  if(mode==='me') target='';
+  box.style.display='block';
+  box.textContent='正在取你自己的地址…';
+  let ip='';
+  if(family!=='auto'){
+    const echo = family==='v4' ? 'https://ipv4.icanhazip.com' : 'https://ipv6.icanhazip.com';
+    try{
+      const r=await fetchTimeout(echo,8000);
+      if(r.ok) ip=(await r.text()).trim();
+    }catch(e){}
+    if(!ip){
+      box.textContent = family==='v4'
+        ? '没拿到 IPv4：这条网络可能没有 IPv4 出口，或接口被拦了。试试 IPv6。'
+        : '没拿到 IPv6：这条网络可能没开 IPv6（很多老宽带都是这样）。试试 IPv4。';
+      return;
+    }
+    $('ipInput').value=ip;
+  }
+  await showIP(ip);
+}
+
+async function showIP(target){
+  const box=$('ipResult');
+  if(typeof target!=='string') target=$('ipInput').value.trim();
   box.style.display='block';
   box.textContent='查询中…';
   const urls = target
@@ -725,8 +750,9 @@ async function lookupIP(mode){
       const d=await r.json();
       if(!d || d.error===true || d.success===false) continue;
       const conn=d.connection||{};
+      const ip=d.ip||target||'本机';
       const lines=[];
-      lines.push('🖥️ IP：'+(d.ip||target||'本机'));
+      lines.push('🖥️ IP：'+ip+'（'+(ip.indexOf(':')>=0?'IPv6':'IPv4')+'）');
       const country=d.country_name||d.country;
       if(country) lines.push('🌍 国家/地区：'+country);
       if(d.region) lines.push('🗺️ 省/州：'+d.region);
@@ -736,6 +762,7 @@ async function lookupIP(mode){
       if(d.asn||conn.asn) lines.push('🔢 ASN：'+(d.asn||conn.asn));
       const tz=(typeof d.timezone==='string')?d.timezone:(d.timezone&&d.timezone.id);
       if(tz) lines.push('🕐 时区：'+tz);
+      if(ip.indexOf(':')>=0) lines.push('ℹ️ IPv6 地址会按设备和时间变化，省市信息只能当参考。');
       box.innerHTML=lines.map(function(s){return esc(s)}).join('<br>');
       return;
     }catch(e){}
