@@ -9,8 +9,8 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="老头的小站">
 <meta property="og:description" content="我的个人主页，记录生活、爱好和瞎捣鼓的日常。">
-<meta property="og:image" content="https://596012613lzq-afk.github.io/my-website/avatar.jpg">
-<meta property="og:url" content="https://596012613lzq-afk.github.io/my-website/">
+<meta property="og:image" content="https://laotou.is-a.dev/avatar.jpg">
+<meta property="og:url" content="https://laotou.is-a.dev/">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%230a0e17'/%3E%3Ctext x='50' y='68' font-size='52' font-family='sans-serif' font-weight='bold' fill='%2300d4ff' text-anchor='middle'%3E老%3C/text%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="avatar.jpg">
@@ -169,6 +169,8 @@ body{
   transition:border-color .2s,transform .2s;
 }
 .link-item:hover{border-color:var(--border-strong);transform:translateY(-2px)}
+.link-item.plain{cursor:default;opacity:.75}
+.link-item.plain:hover{border-color:var(--border);transform:none}
 .list-item{
   background:var(--bg-soft);border-left:3px solid var(--accent);border-radius:9px;
   padding:14px;margin-bottom:11px;
@@ -230,7 +232,7 @@ body{
     <img class="avatar" src="avatar.jpg" alt="我的头像">
     <h1>老头的小站</h1>
     <p class="tagline">一个二年级“废柴”自己捣鼓的个人主页 —— 记录生活、爱好和摆烂日常。</p>
-    <a class="domain-badge" href="https://596012613lzq-afk.github.io/my-website/" target="_blank" rel="noopener">🌐 596012613lzq-afk.github.io/my-website</a>
+    <a class="domain-badge" href="https://laotou.is-a.dev/" target="_blank" rel="noopener">🌐 laotou.is-a.dev</a>
     <div class="hero-actions">
       <a href="#about" class="btn-hero btn-primary">开始探索</a>
       <button class="btn-hero btn-ghost" onclick="shareWebsite()">📤 分享给小伙伴</button>
@@ -358,17 +360,38 @@ body{
     </div>
   </details>
 
-  <!-- ===== 收藏 ===== -->
+  <!-- ===== 收藏（桌面快捷方式搬上来） ===== -->
   <section class="section" id="links">
-    <h2>我的收藏</h2>
-    <p class="hint">常去的几个地方。</p>
+    <h2>我的收藏 · 桌面网站</h2>
+    <p class="hint">桌面上那些网站图标，都搬这儿了，手机上也能直接点开。</p>
     <div class="link-list">
       <a href="https://www.tiktok.com" target="_blank" rel="noopener" class="link-item"><span>🎵</span>TikTok</a>
       <a href="https://www.xiaohongshu.com" target="_blank" rel="noopener" class="link-item"><span>📕</span>小红书</a>
       <a href="https://www.bilibili.com" target="_blank" rel="noopener" class="link-item"><span>📺</span>B 站</a>
       <a href="https://www.youtube.com" target="_blank" rel="noopener" class="link-item"><span>📹</span>YouTube</a>
-      <a href="https://music.163.com/playlist?id=13103739035" target="_blank" rel="noopener" class="link-item"><span>🎧</span>国风歌单</a>
+      <a href="https://x.com" target="_blank" rel="noopener" class="link-item"><span>✖️</span>X（推特）</a>
+      <a href="https://open.spotify.com" target="_blank" rel="noopener" class="link-item"><span>🎧</span>Spotify</a>
+      <a href="https://music.163.com/playlist?id=13103739035" target="_blank" rel="noopener" class="link-item"><span>🎼</span>国风歌单</a>
+      <a href="https://web.telegram.org" target="_blank" rel="noopener" class="link-item"><span>✈️</span>Telegram</a>
+      <a href="https://copilot.microsoft.com" target="_blank" rel="noopener" class="link-item"><span>🧑‍💻</span>Copilot</a>
       <a href="https://www.doubao.com" target="_blank" rel="noopener" class="link-item"><span>🤖</span>豆包</a>
+      <a href="https://laotou.is-a.dev/" target="_blank" rel="noopener" class="link-item"><span>🌐</span>老头的小站</a>
+    </div>
+
+    <h2 style="margin-top:28px">💻 我电脑上的软件</h2>
+    <p class="hint">这些是装在本机的程序，不是网页；能对上官网的点名字就能去下载。</p>
+    <div class="link-list">
+      <a href="https://www.7-zip.org" target="_blank" rel="noopener" class="link-item"><span>🗜️</span>7-Zip</a>
+      <a href="https://www.capcut.com" target="_blank" rel="noopener" class="link-item"><span>✂️</span>CapCut</a>
+      <a href="https://www.internetdownloadmanager.com" target="_blank" rel="noopener" class="link-item"><span>⬇️</span>IDM 下载器</a>
+      <a href="https://www.torproject.org" target="_blank" rel="noopener" class="link-item"><span>🧅</span>Tor Browser</a>
+      <a href="https://one.dash.cloudflare.com" target="_blank" rel="noopener" class="link-item"><span>☁️</span>Cloudflare One</a>
+      <a href="https://github.com/4gray/iptvnator" target="_blank" rel="noopener" class="link-item"><span>📡</span>IPTVnator</a>
+      <a href="https://github.com/Predidit/Kazumi" target="_blank" rel="noopener" class="link-item"><span>🍿</span>Kazumi</a>
+      <a href="https://github.com/harry0703/MoneyPrinterTurbo" target="_blank" rel="noopener" class="link-item"><span>🎬</span>一键做视频</a>
+      <div class="link-item plain"><span>🖌️</span>Photosoft（本机）</div>
+      <div class="link-item plain"><span>🏃</span>OpenRung（本机）</div>
+      <div class="link-item plain"><span>📁</span>成品视频 / 素材文件夹</div>
     </div>
   </section>
 
@@ -495,7 +518,6 @@ async function loadWeather(){
   }catch(e){
     el.textContent=c.name+' 天气读取失败';
   }
-  $('cityBtn').textContent=cityIdx===0?'换城市':'换城市';
 }
 loadWeather();
 function switchCity(){
