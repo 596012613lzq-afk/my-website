@@ -119,7 +119,7 @@ body{
 }
 .card:hover{transform:translateY(-4px);border-color:var(--border-strong);box-shadow:0 10px 26px var(--glow)}
 .card h2{font-size:19px;color:var(--accent);margin-bottom:12px;font-weight:700}
-.card p{color:var(--text-dim);font-size:14.5}
+.card p{color:var(--text-dim);font-size:14.5px}
 .card-wide{grid-column:span 2}
 .social-links{display:flex;gap:12px;margin-top:18px;flex-wrap:wrap}
 .social-links a{
@@ -186,16 +186,6 @@ body{
 }
 #themeBtn{bottom:20px;left:20px}
 #topBtn{bottom:20px;right:20px;display:none}
-#musicBtn{bottom:82px;right:20px;background:var(--bg-card);color:var(--accent)}
-#musicPanel{
-  position:fixed;bottom:138px;right:20px;width:210px;padding:14px;border-radius:12px;
-  background:var(--bg-card);border:1px solid var(--border);backdrop-filter:blur(12px);
-  box-shadow:var(--shadow);z-index:1000;display:none;
-}
-#musicPanel .head{color:var(--accent);font-size:12px;font-weight:700;text-align:center;margin-bottom:8px}
-#musicPanel .ctrl{display:flex;justify-content:center;gap:14px;align-items:center}
-#musicPanel .ctrl button{background:none;border:none;color:var(--accent);font-size:18px;cursor:pointer}
-#songName{text-align:center;margin-top:7px;color:var(--text-dim);font-size:11.5px}
 /* ===== 响应式 ===== */
 @media(max-width:768px){
   .grid{grid-template-columns:1fr}
@@ -222,6 +212,7 @@ body{
     <div class="nav-links" id="navLinks">
       <a href="#home">首页</a>
       <a href="#about">关于</a>
+      <a href="#music">音乐</a>
       <a href="#tools">工具箱</a>
       <a href="#links">收藏</a>
       <a href="#blog">博客</a>
@@ -256,7 +247,7 @@ body{
     </div>
   </div>
 
-  <!-- ===== 三张主卡片 ===== -->
+  <!-- ===== 主卡片区 ===== -->
   <div class="grid" id="about">
     <div class="card card-wide">
       <h2>关于我</h2>
@@ -277,6 +268,12 @@ body{
       <h2>最近在干嘛</h2>
       <p id="randomLine">点一下看看今天的状态 👇</p>
       <button class="btn" style="margin-top:12px" onclick="rollStatus()">摇一句</button>
+    </div>
+    <div class="card card-wide" id="music">
+      <h2>🎵 音乐 · 网易云歌单</h2>
+      <p>网易云热门华语国风歌曲，点歌直接放～</p>
+      <iframe src="https://music.163.com/outchain/player?type=0&id=13103739035&auto=0&height=320" frameborder="0" allow="autoplay" style="width:100%;height:320px;border:0;border-radius:10px;overflow:hidden;margin-top:12px;display:block"></iframe>
+      <p style="margin-top:12px;font-size:12.5px;color:var(--text-dim)">放不出来就去网易云听：<a href="https://music.163.com/playlist?id=13103739035" target="_blank" rel="noopener" style="color:var(--accent)">打开歌单 ↗</a></p>
     </div>
   </div>
 
@@ -370,7 +367,7 @@ body{
       <a href="https://www.xiaohongshu.com" target="_blank" rel="noopener" class="link-item"><span>📕</span>小红书</a>
       <a href="https://www.bilibili.com" target="_blank" rel="noopener" class="link-item"><span>📺</span>B 站</a>
       <a href="https://www.youtube.com" target="_blank" rel="noopener" class="link-item"><span>📹</span>YouTube</a>
-      <a href="https://music.163.com" target="_blank" rel="noopener" class="link-item"><span>🎧</span>网易云音乐</a>
+      <a href="https://music.163.com/playlist?id=13103739035" target="_blank" rel="noopener" class="link-item"><span>🎧</span>国风歌单</a>
       <a href="https://www.doubao.com" target="_blank" rel="noopener" class="link-item"><span>🤖</span>豆包</a>
     </div>
   </section>
@@ -416,17 +413,6 @@ body{
 
 <!-- ===== 浮动控件 ===== -->
 <button class="fab" id="themeBtn" onclick="toggleTheme()" title="切换深/浅色">☀️</button>
-<button class="fab" id="musicBtn" onclick="togglePanel()" title="音乐">🎵</button>
-<div id="musicPanel">
-  <div class="head">🎵 随便听听</div>
-  <div class="ctrl">
-    <button onclick="prevSong()">⏮</button>
-    <button onclick="toggleMusic()" id="playBtn">▶</button>
-    <button onclick="nextSong()">⏭</button>
-  </div>
-  <div id="songName">轻音乐</div>
-</div>
-<audio id="bgm" preload="none"></audio>
 <button class="fab" id="topBtn" onclick="scrollToTop()">↑</button>
 
 <script>
@@ -450,7 +436,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a=>{
 
 /* ===== 分享 ===== */
 function shareWebsite(){
-  const url='https://596012613lzq-afk.github.io/my-website/';
+  const url='https://laotou.is-a.dev/';
   if(navigator.clipboard&&navigator.clipboard.writeText){
     navigator.clipboard.writeText(url).then(()=>alert('链接已复制，粘贴发给小伙伴就行 😊')).catch(()=>prompt('复制这个链接发给小伙伴：',url));
   }else{ prompt('复制这个链接发给小伙伴：',url); }
@@ -760,33 +746,6 @@ function exportData(){
   a.download='老头的小站-备份-'+new Date().toISOString().slice(0,10)+'.json';
   a.click();
   URL.revokeObjectURL(a.href);
-}
-
-/* ===== 音乐（可收起） ===== */
-const songs=[
-  {name:'轻音乐',url:'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=soft-piano-music.mp3'},
-  {name:'电子 1',url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'},
-  {name:'电子 2',url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3'},
-  {name:'电子 3',url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3'}
-];
-let songIdx=0, playing=false;
-const bgm=$('bgm');
-function loadSong(i){
-  songIdx=i; bgm.src=songs[i].url; $('songName').textContent=songs[i].name;
-  if(playing) bgm.play().catch(()=>{});
-}
-function toggleMusic(){
-  if(playing){bgm.pause();$('playBtn').textContent='▶';}
-  else{bgm.play().catch(()=>{});$('playBtn').textContent='⏸';}
-  playing=!playing;
-}
-function prevSong(){loadSong((songIdx-1+songs.length)%songs.length);}
-function nextSong(){loadSong((songIdx+1)%songs.length);}
-bgm.addEventListener('ended',nextSong);
-loadSong(0);
-function togglePanel(){
-  const p=$('musicPanel');
-  p.style.display=p.style.display==='block'?'none':'block';
 }
 </script>
 </body>
